@@ -17,9 +17,11 @@ namespace TimAlat_Siperal
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // UBAH BARIS DI BAWAH INI:
-            // Dari Form1() menjadi FormPengguna()
-            Application.Run(new FormPengguna());
+            // Mengarahkan aplikasi untuk membuka Form Peminjaman saat pertama kali dijalankan
+            Application.Run(new FormPeminjaman());
         }
     }
 }
+
+
+
