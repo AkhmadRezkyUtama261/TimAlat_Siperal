@@ -60,6 +60,10 @@ namespace Form_Alat
             }
         }
 
-        
+        private void btnAlat_Click(object sender, EventArgs e)
+        {
+            FormAlat frm = new FormAlat();
+            frm.Show();
+        }
     }
 }
