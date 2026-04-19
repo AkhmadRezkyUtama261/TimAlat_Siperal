@@ -62,6 +62,7 @@ namespace TimAlat_Siperal
             }
         }
 
+
         private void btnCari_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtNIK.Text)) { MessageBox.Show("Masukkan NIK!"); return; }
@@ -82,5 +83,66 @@ namespace TimAlat_Siperal
                     MessageBox.Show("Warga tidak ditemukan!");
                     panelTransaksi.Enabled = false;
                 }
+            }
+        }
+
+        private void cbAlat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbAlat.SelectedIndex == -1) return;
+            using (SqlConnection conn = konn.GetConn())
+            {
+                conn.Open();
+                cmd = new SqlCommand("SELECT Stok FROM Alat WHERE Nama_Alat = @nama", conn);
+                cmd.Parameters.AddWithValue("@nama", cbAlat.SelectedItem.ToString());
+                object res = cmd.ExecuteScalar();
+                lblStok.Text = (res != null) ? res.ToString() : "0";
+            }
+        }
+
+
+        private void btnSimpan_Click(object sender, EventArgs e)
+        {
+            int jmlPinjam;
+            if (!int.TryParse(txtJumlah.Text, out jmlPinjam))
+            {
+                MessageBox.Show("Jumlah harus angka!"); return;
+            }
+
+            // Validasi: Nggak boleh 0 atau minus
+            if (jmlPinjam <= 0)
+            {
+                MessageBox.Show("Jumlah pinjam minimal 1, input yang benar!"); return;
+            }
+
+            int stokTersedia = int.Parse(lblStok.Text);
+            if (jmlPinjam > stokTersedia)
+            {
+                MessageBox.Show("Stok tidak mencukupi!"); return;
+            }
+
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    cmd = new SqlCommand("SELECT alatID FROM Alat WHERE Nama_Alat = @nama", conn);
+                    cmd.Parameters.AddWithValue("@nama", cbAlat.SelectedItem.ToString());
+                    int idAlat = (int)cmd.ExecuteScalar();
+
+                    cmd = new SqlCommand("INSERT INTO Peminjaman (petugasID, NIK, alatID, Status, Jumlah_Pinjam) VALUES (1, @nik, @id, 'DIPINJAM', @jml)", conn);
+                    cmd.Parameters.AddWithValue("@nik", txtNIK.Text.Trim());
+                    cmd.Parameters.AddWithValue("@id", idAlat);
+                    cmd.Parameters.AddWithValue("@jml", jmlPinjam);
+                    cmd.ExecuteNonQuery();
+
+                    cmd = new SqlCommand("UPDATE Alat SET Stok = Stok - @jml WHERE alatID = @id", conn);
+                    cmd.Parameters.AddWithValue("@jml", jmlPinjam);
+                    cmd.Parameters.AddWithValue("@id", idAlat);
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Berhasil Dipinjam!");
+                    ShowData(); Bersihkan();
+                }
+                catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
             }
         }
