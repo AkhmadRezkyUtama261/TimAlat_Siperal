@@ -109,6 +109,44 @@ namespace Form_Alat
             }
         }
 
+        private void btnUpdateAlat_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (conn.State == System.Data.ConnectionState.Closed)
+                {
+                    conn.Open();
+                }
+
+                string query = @"UPDATE Alat 
+                                SET Nama_Alat = @Nama_Alat, Stok = @Stok
+                                WHERE Nama_Alat = @Nama_Alat";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue("@Nama_Alat", TXTNamaAlat.Text);
+                cmd.Parameters.AddWithValue("@Stok", TXTStok.Text);
+             
+                int result = cmd.ExecuteNonQuery();
+
+                if (result > 0)
+                {
+                    MessageBox.Show("Data  berhasil diUpdate");
+                    ClearForm();
+                    btnMenampilkanDataAlat.PerformClick();
+                }
+                else
+                {
+                    MessageBox.Show("Data tidak ditemukyan");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Terjadi kesalahan " + ex.Message);
+            }
+        }
+
+
         
     }
     
