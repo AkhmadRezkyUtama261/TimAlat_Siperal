@@ -13,7 +13,7 @@ namespace Siperal
 {
     public partial class Form1 : Form
     {
-        string koneksi = @"Data Source=EKYYY\REZKY;Initial Catalog=Siperal;Integrated Security=True";
+        string koneksi = @"Data Source=EKYYY\REZKY;Initial Catalog= DBPeminjamanAlat;Integrated Security=True";
         public Form1()
         {
             InitializeComponent();
@@ -26,22 +26,22 @@ namespace Siperal
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            // Cek apakah kolom kosong
+            // Cek input kosong
             if (string.IsNullOrEmpty(txtUsername.Text) || string.IsNullOrEmpty(txtPassword.Text))
             {
-                MessageBox.Show("Isi dulu username dan password-nya!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Silakan isi Username dan Password terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Pakai nama server laptop kamu yang tadi
-            string koneksi = @"Data Source=EKYYY\REZKY;Initial Catalog=Siperal;Integrated Security=True";
+            // Menggunakan database DBPeminjamanAlat
+            string koneksi = @"Data Source=EKYYY\REZKY;Initial Catalog= DBPeminjamanAlat;Integrated Security=True";
 
             using (SqlConnection conn = new SqlConnection(koneksi))
             {
                 try
                 {
                     conn.Open();
-                    // Query untuk mencocokkan data Admin_1
+                    // Sesuaikan query dengan nama tabel dan kolom di database baru kamu
                     string query = "SELECT COUNT(*) FROM Admin WHERE username=@user AND password=@pass";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@user", txtUsername.Text);
@@ -51,17 +51,17 @@ namespace Siperal
 
                     if (result > 0)
                     {
-                        MessageBox.Show("Login Berhasil! Selamat datang Admin.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        // Di sini nanti kita panggil Form Utama
+                        MessageBox.Show("Login Berhasil! Selamat datang di Sistem Peminjaman Alat.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Lanjutkan ke Form Utama setelah login sukses
                     }
                     else
                     {
-                        MessageBox.Show("Username atau Password salah! Coba cek lagi.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Username atau Password salah!", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Ada masalah koneksi: " + ex.Message);
+                    MessageBox.Show("Gagal terhubung ke database: " + ex.Message, "Error Koneksi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
