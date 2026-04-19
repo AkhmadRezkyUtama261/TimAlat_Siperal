@@ -146,3 +146,75 @@ namespace TimAlat_Siperal
                 catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
             }
         }
+
+        private void dgvPeminjaman_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvPeminjaman.Rows[e.RowIndex];
+                idTerpilih = row.Cells["ID"].Value.ToString();
+            }
+        }
+
+        private void btnKembalikan_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(idTerpilih)) { MessageBox.Show("Klik data di tabel!"); return; }
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    cmd = new SqlCommand("SELECT alatID, Jumlah_Pinjam, Status FROM Peminjaman WHERE peminjamanID = @id", conn);
+                    cmd.Parameters.AddWithValue("@id", idTerpilih);
+                    dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        if (dr["Status"].ToString() == "TERSEDIA")
+                        {
+                            MessageBox.Show("Sudah dikembalikan!"); dr.Close(); return;
+                        }
+                        int idAlat = (int)dr["alatID"];
+                        int jml = Convert.ToInt32(dr["Jumlah_Pinjam"]);
+                        dr.Close();
+
+                        cmd = new SqlCommand("UPDATE Peminjaman SET Status = 'TERSEDIA' WHERE peminjamanID = @id", conn);
+                        cmd.Parameters.AddWithValue("@id", idTerpilih);
+                        cmd.ExecuteNonQuery();
+
+                        cmd = new SqlCommand("UPDATE Alat SET Stok = Stok + @jml WHERE alatID = @id", conn);
+                        cmd.Parameters.AddWithValue("@jml", jml);
+                        cmd.Parameters.AddWithValue("@id", idAlat);
+                        cmd.ExecuteNonQuery();
+
+                        MessageBox.Show("Barang Kembali!");
+                        ShowData(); idTerpilih = "";
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+            }
+        }
+
+        private void btnHapus_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(idTerpilih)) { MessageBox.Show("Pilih data dulu!"); return; }
+            if (MessageBox.Show("Hapus data ini?", "Hapus", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                using (SqlConnection conn = konn.GetConn())
+                {
+                    conn.Open();
+                    cmd = new SqlCommand("DELETE FROM Peminjaman WHERE peminjamanID = @id", conn);
+                    cmd.Parameters.AddWithValue("@id", idTerpilih);
+                    cmd.ExecuteNonQuery();
+                    ShowData(); idTerpilih = "";
+                }
+            }
+        }
+
+        void Bersihkan()
+        {
+            txtNIK.Clear(); lblNamaPeminjam.Text = "-"; lblAlamat.Text = "-";
+            cbAlat.SelectedIndex = -1; lblStok.Text = "0"; txtJumlah.Clear();
+            panelTransaksi.Enabled = false; idTerpilih = "";
+        }
+    }
+}
