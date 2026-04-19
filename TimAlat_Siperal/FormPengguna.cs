@@ -80,3 +80,41 @@ namespace TimAlat_Siperal
                 }
             }
         }
+        // 2. Tombol UBAH (Update pakai memori nikLama)
+        private void btnUbah_Click(object sender, EventArgs e)
+        {
+            if (txtNIK.Text.Trim() == "" || nikLama == "")
+            {
+                MessageBox.Show("Pilih data yang mau diubah dulu dari tabel!");
+                return;
+            }
+
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    // Query diubah: Kita ganti juga kolom NIK-nya, dan mencari berdasarkan nikLama
+                    string query = "UPDATE Peminjam SET NIK='" + txtNIK.Text.Trim() + "', Nama_Peminjam='" + txtNama.Text.Trim() + "', Alamat='" + txtAlamat.Text.Trim() + "', NomorHP='" + txtTelp.Text.Trim() + "' WHERE NIK='" + nikLama + "'";
+                    cmd = new SqlCommand(query, conn);
+
+                    int hasil = cmd.ExecuteNonQuery();
+                    if (hasil > 0)
+                    {
+                        MessageBox.Show("Data Berhasil Diubah!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Gagal! Data tidak ditemukan di database.");
+                    }
+
+                    TampilData();
+                    Bersihkan();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal Ubah: " + ex.Message);
+                }
+            }
+        }
+
