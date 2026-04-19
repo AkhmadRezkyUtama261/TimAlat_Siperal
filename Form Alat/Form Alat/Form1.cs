@@ -147,7 +147,79 @@ namespace Form_Alat
         }
 
 
-        
+        private void btnHapusAlat_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (conn.State == System.Data.ConnectionState.Closed)
+                {
+                    conn.Open();
+                }
+
+                DialogResult resultConfirm = MessageBox.Show(
+                    "Kenpa di Hapus Sihh Syebell huhh",
+                    "Konfirmasi",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resultConfirm == DialogResult.Yes)
+                {
+                    string query = "DELETE FROM Alat WHERE Nama_Alat = @Nama_Alat";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@Nama_Alat", TXTNamaAlat.Text);
+                    int result = cmd.ExecuteNonQuery();
+
+                    if (result > 0)
+                    {
+                        MessageBox.Show("Data  berhasil diHapyus");
+                        ClearForm();
+                        btnMenampilkanDataAlat.PerformClick();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Data tidak ditemukyan");
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Terjadi kesalahan " + ex.Message);
+            }
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+
+                TXTNamaAlat.Text = row.Cells["Nama_Alat"].Value.ToString();
+                TXTStok.Text = row.Cells["Stok"].Value.ToString();
+
+            }
+        }
+        private void ClearForm()
+        {
+            TXTNamaAlat.Clear();
+            TXTStok.Clear();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+           
+
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.MultiSelect = false;
+            dataGridView1.ReadOnly = true;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            dataGridView1.CellClick += dataGridView1_CellClick;
+
+        }
     }
     
 }
