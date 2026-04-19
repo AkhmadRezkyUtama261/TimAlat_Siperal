@@ -118,3 +118,44 @@ namespace TimAlat_Siperal
             }
         }
 
+        // 3. Tombol HAPUS 
+        private void btnHapus_Click(object sender, EventArgs e)
+        {
+            if (txtNIK.Text.Trim() == "")
+            {
+                MessageBox.Show("Pilih dulu data yang mau dihapus dari tabel!");
+                return;
+            }
+
+            if (MessageBox.Show("Yakin hapus data NIK: " + txtNIK.Text.Trim() + "?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                using (SqlConnection conn = konn.GetConn())
+                {
+                    try
+                    {
+                        conn.Open();
+                        // Hapus menggunakan nikLama biar lebih akurat
+                        string query = "DELETE FROM Peminjam WHERE NIK='" + nikLama + "'";
+                        cmd = new SqlCommand(query, conn);
+
+                        int hasil = cmd.ExecuteNonQuery();
+
+                        if (hasil > 0)
+                        {
+                            MessageBox.Show("Data Berhasil Dihapus!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Gagal! Data tidak ditemukan di database.");
+                        }
+
+                        TampilData();
+                        Bersihkan();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Gagal Hapus: " + ex.Message);
+                    }
+                }
+            }
+        }
