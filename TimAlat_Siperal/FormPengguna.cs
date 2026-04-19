@@ -51,4 +51,32 @@ namespace TimAlat_Siperal
             txtNIK.Focus();
         }
 
-       
+        // 1. Tombol SIMPAN 
+        private void btnSimpan_Click(object sender, EventArgs e)
+        {
+            if (txtNIK.Text.Trim() == "" || txtNama.Text.Trim() == "")
+            {
+                MessageBox.Show("NIK dan Nama wajib diisi!");
+                return;
+            }
+
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "INSERT INTO Peminjam (NIK, Nama_Peminjam, Alamat, NomorHP) " +
+                                   "VALUES ('" + txtNIK.Text.Trim() + "', '" + txtNama.Text.Trim() + "', '" + txtAlamat.Text.Trim() + "', '" + txtTelp.Text.Trim() + "')";
+
+                    cmd = new SqlCommand(query, conn);
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Data Berhasil Disimpan!");
+                    TampilData();
+                    Bersihkan();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal Simpan: " + ex.Message);
+                }
+            }
+        }
