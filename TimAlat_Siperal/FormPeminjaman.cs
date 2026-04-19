@@ -61,3 +61,26 @@ namespace TimAlat_Siperal
                 catch (Exception ex) { MessageBox.Show("Gagal Load Alat: " + ex.Message); }
             }
         }
+
+        private void btnCari_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtNIK.Text)) { MessageBox.Show("Masukkan NIK!"); return; }
+            using (SqlConnection conn = konn.GetConn())
+            {
+                conn.Open();
+                cmd = new SqlCommand("SELECT Nama_Peminjam, Alamat FROM Peminjam WHERE NIK = @nik", conn);
+                cmd.Parameters.AddWithValue("@nik", txtNIK.Text.Trim());
+                dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    lblNamaPeminjam.Text = dr["Nama_Peminjam"].ToString();
+                    lblAlamat.Text = dr["Alamat"].ToString();
+                    panelTransaksi.Enabled = true;
+                }
+                else
+                {
+                    MessageBox.Show("Warga tidak ditemukan!");
+                    panelTransaksi.Enabled = false;
+                }
+            }
+        }
