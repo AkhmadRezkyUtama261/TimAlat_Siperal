@@ -159,3 +159,26 @@ namespace TimAlat_Siperal
                 }
             }
         }
+       
+        private void dgvPengguna_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = this.dgvPengguna.Rows[e.RowIndex];
+
+                txtNIK.Text = row.Cells["NIK"].Value.ToString();
+                txtNama.Text = row.Cells["Nama_Peminjam"].Value.ToString();
+                txtAlamat.Text = row.Cells["Alamat"].Value.ToString();
+                txtTelp.Text = row.Cells["NomorHP"].Value.ToString();
+
+                nikLama = row.Cells["NIK"].Value.ToString();
+                txtNIK.Enabled = true;
+            }
+        }
+
+        private void FormPengguna_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
