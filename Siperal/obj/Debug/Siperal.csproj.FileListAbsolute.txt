@@ -1,0 +1,10 @@
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\bin\Debug\Siperal.exe.config
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\bin\Debug\Siperal.exe
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\bin\Debug\Siperal.pdb
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\obj\Debug\Siperal.csproj.AssemblyReference.cache
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\obj\Debug\Siperal.Form1.resources
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\obj\Debug\Siperal.Properties.Resources.resources
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\obj\Debug\Siperal.csproj.GenerateResource.cache
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\obj\Debug\Siperal.csproj.CoreCompileInputs.cache
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\obj\Debug\Siperal.exe
+C:\Users\Hewlett-Packard\source\repos\TimAlat_Siperal\Siperal\obj\Debug\Siperal.pdb
