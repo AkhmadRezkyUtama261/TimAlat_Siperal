@@ -20,10 +20,10 @@ namespace TimAlat_Siperal
             // ===================================================================
 
             // 1. Aktifkan baris ini kalau mau buka Form Peminjaman (Transaksi)
-            //Application.Run(new FormPeminjaman());
+            Application.Run(new FormPeminjaman());
 
             // 2. Aktifkan baris ini kalau mau buka Form Pengguna (Data Member)
-            Application.Run(new FormPengguna());
+           //Application.Run(new FormPengguna());
 
             
         }
