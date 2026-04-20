@@ -94,7 +94,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Siperal.Properties.Resources.Gemini_Generated_Image_37psnq37psnq37ps_removebg_preview;
-            this.pictureBox1.Location = new System.Drawing.Point(247, -73);
+            this.pictureBox1.Location = new System.Drawing.Point(308, -73);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(508, 521);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;

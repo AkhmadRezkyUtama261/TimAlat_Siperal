@@ -13,7 +13,7 @@ namespace Siperal
 {
     public partial class Form1 : Form
     {
-        string koneksi = @"Data Source=EKYYY\REZKY;Initial Catalog= DBPeminjamanAlat;Integrated Security=True";
+        string koneksi = @"Data Source=EKYYY\REZKY;Initial Catalog=DBPeminjamanAlat;Integrated Security=True";
         public Form1()
         {
             InitializeComponent();
