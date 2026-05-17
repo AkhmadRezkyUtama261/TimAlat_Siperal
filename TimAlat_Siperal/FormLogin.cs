@@ -12,6 +12,7 @@ namespace TimAlat_Siperal
         public FormLogin()
         {
             InitializeComponent();
+            CekKoneksiOtomatis();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -88,6 +89,18 @@ namespace TimAlat_Siperal
             btnLoginBaru.Cursor = Cursors.Hand;
 
             panel2.Controls.Add(btnLoginBaru);
+        }
+
+        private void CekKoneksiOtomatis()
+        {
+            using (SqlConnection conn = new SqlConnection(koneksi))
+            {
+                try { conn.Open(); }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Koneksi Database Gagal!\n\nError: " + ex.Message, "Kesalahan Fatal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }
