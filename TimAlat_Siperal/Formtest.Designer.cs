@@ -1,6 +1,6 @@
 ﻿namespace TimAlat_Siperal
 {
-    partial class Form1
+    partial class Formtest
     {
         /// <summary>
         /// Required designer variable.

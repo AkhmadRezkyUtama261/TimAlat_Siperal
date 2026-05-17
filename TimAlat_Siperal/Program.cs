@@ -18,7 +18,7 @@ namespace TimAlat_Siperal
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Mengarahkan aplikasi untuk membuka Form Peminjaman saat pertama kali dijalankan
-            Application.Run(new FormPeminjaman());
+            Application.Run(new FormLogin());
         }
     }
 }

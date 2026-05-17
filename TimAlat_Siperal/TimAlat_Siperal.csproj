@@ -46,11 +46,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="FormAlat.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Formtest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formtest.Designer.cs">
+      <DependentUpon>Formtest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLogin.Designer.cs">
+      <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="FormPeminjaman.cs">
       <SubType>Form</SubType>
@@ -64,14 +73,29 @@
     <Compile Include="FormPengguna.Designer.cs">
       <DependentUpon>FormPengguna.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dasboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dasboard.Designer.cs">
+      <DependentUpon>Dasboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Koneksi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormAlat.resx">
+      <DependentUpon>FormAlat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLogin.resx">
+      <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormPeminjaman.resx">
       <DependentUpon>FormPeminjaman.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormPengguna.resx">
       <DependentUpon>FormPengguna.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dasboard.resx">
+      <DependentUpon>Dasboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -81,6 +105,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -94,6 +119,51 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\baground login.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\baground login1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cuplikan layar 2026-05-14 123142.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gemini_Generated_Image_am7lp2am7lp2am7l %281%29 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\thumb-1920-1276648.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gradient-blue-green-lines-wallpaper-preview.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gradient-blue-green-lines-wallpaper-preview1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gradient-blue-green-lines-wallpaper-preview2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dddd.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1251337-3840x2160-desktop-4k-microsoft-wallpaper-photo.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\elegant.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\microsoft_windows_wallpaper_by_sanshow_dgtme96-pre.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\b08503e1dabedeffc27db6ccba151078.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\windows-11-dark-mode-blue-stock-official-3840x2160-5630.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\windows_11_wallpaper_dark_mode_by_vyachachsel_del784t-fullview.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

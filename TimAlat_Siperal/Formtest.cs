@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace TimAlat_Siperal
 {
-    public partial class Form1 : Form
+    public partial class Formtest : Form
     {
-        public Form1()
+        public Formtest()
         {
             InitializeComponent();
         }
