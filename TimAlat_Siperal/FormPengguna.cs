@@ -169,3 +169,24 @@ private void dgvPengguna_CellClick(object sender, DataGridViewCellEventArgs e)
         txtTelp.Text = row.Cells["NomorHP"].Value != DBNull.Value ? row.Cells["NomorHP"].Value.ToString() : "";
     }
 }
+
+private void btnSearch_Click_1(object sender, EventArgs e)
+{
+    using (SqlConnection conn = konn.GetConn())
+    {
+        try
+        {
+            string queryBocor = "SELECT * FROM vw_Peminjam WHERE Nama_Peminjam LIKE '%" + txtSearch.Text + "%'";
+
+            SqlDataAdapter da = new SqlDataAdapter(queryBocor, conn);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            bs.DataSource = dt;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error Pencarian: " + ex.Message);
+        }
+    }
+}
