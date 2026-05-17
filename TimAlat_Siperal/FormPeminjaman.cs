@@ -62,3 +62,56 @@ namespace TimAlat_Siperal
         private void bindingNavigatorMoveNextItem_Click(object sender, EventArgs e) { }
     }
 }
+
+void LoadAlatUnik()
+{
+    using (SqlConnection conn = konn.GetConn())
+    {
+        try
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("SELECT alatID, Nama_Alat, Merek FROM Alat WHERE Stok > 0", conn);
+            SqlDataReader dr = cmd.ExecuteReader();
+            if (cbAlat != null)
+            {
+                cbAlat.Items.Clear();
+                cbAlat.Items.Add("--- Pilih Alat ---");
+                while (dr.Read())
+                {
+                    string itemTampil = $"{dr["Nama_Alat"]} {dr["Merek"]} ({dr["alatID"]})";
+                    cbAlat.Items.Add(itemTampil);
+                }
+                cbAlat.SelectedIndex = 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Gagal Memuat Daftar Alat Unik: " + ex.Message);
+        }
+    }
+}
+
+private void cbAlat_SelectedIndexChanged(object sender, EventArgs e)
+{
+    if (cbAlat == null || cbAlat.SelectedIndex <= 0 || cbAlat.Text.StartsWith("---")) return;
+
+    string selectedText = cbAlat.SelectedItem.ToString();
+    int indexBukaKurung = selectedText.LastIndexOf('(');
+    int indexTutupKurung = selectedText.LastIndexOf(')');
+    if (indexBukaKurung == -1 || indexTutupKurung == -1) return;
+
+    string idAlatTerpilih = selectedText.Substring(indexBukaKurung + 1, indexTutupKurung - indexBukaKurung - 1);
+
+    using (SqlConnection conn = konn.GetConn())
+    {
+        try
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("SELECT Stok FROM Alat WHERE alatID = @id", conn);
+            cmd.Parameters.AddWithValue("@id", idAlatTerpilih);
+            object res = cmd.ExecuteScalar();
+            if (lblStok != null) lblStok.Text = (res != null) ? res.ToString() : "0";
+        }
+        catch { if (lblStok != null) lblStok.Text = "0"; }
+    }
+}
