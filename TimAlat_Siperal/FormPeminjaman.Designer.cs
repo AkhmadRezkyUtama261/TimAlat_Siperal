@@ -383,7 +383,7 @@
             // 
             // txtSearchTrans
             // 
-            this.txtSearchTrans.Location = new System.Drawing.Point(456, 7);
+            this.txtSearchTrans.Location = new System.Drawing.Point(827, 1);
             this.txtSearchTrans.Name = "txtSearchTrans";
             this.txtSearchTrans.Size = new System.Drawing.Size(540, 22);
             this.txtSearchTrans.TabIndex = 8;
@@ -391,7 +391,7 @@
             // btnSearchTrans
             // 
             this.btnSearchTrans.BackColor = System.Drawing.Color.CornflowerBlue;
-            this.btnSearchTrans.Location = new System.Drawing.Point(1063, 4);
+            this.btnSearchTrans.Location = new System.Drawing.Point(1396, 0);
             this.btnSearchTrans.Name = "btnSearchTrans";
             this.btnSearchTrans.Size = new System.Drawing.Size(105, 25);
             this.btnSearchTrans.TabIndex = 9;

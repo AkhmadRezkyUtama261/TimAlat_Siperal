@@ -254,11 +254,11 @@ namespace TimAlat_Siperal
                 {
                     idTerpilih = row.Cells[0].Value.ToString();
 
-                    if (lblNamaPeminjam != null && row.Cells["NamaPeminjam"].Value != null)
-                        lblNamaPeminjam.Text = row.Cells["NamaPeminjam"].Value.ToString();
+                    if (lblNamaPeminjam != null && row.Cells["Nama Peminjam"].Value != null)
+                        lblNamaPeminjam.Text = row.Cells["Nama Peminjam"].Value.ToString();
 
-                    if (lblAlamat != null && row.Cells["NamaAlat"].Value != null)
-                        lblAlamat.Text = row.Cells["NamaAlat"].Value.ToString();
+                    if (lblAlamat != null && row.Cells["Nama Alat"].Value != null)
+                        lblAlamat.Text = row.Cells["Nama Alat"].Value.ToString();
                 }
             }
         }
@@ -333,7 +333,6 @@ namespace TimAlat_Siperal
             }
         }
 
-        // ================= FITUR CARI AMAN (TANPA EFEK SQLi / RESET BUTTON) =================
         private void btnSearchTrans_Click(object sender, EventArgs e)
         {
             if (txtSearchTrans != null && string.IsNullOrWhiteSpace(txtSearchTrans.Text))
@@ -346,7 +345,7 @@ namespace TimAlat_Siperal
             {
                 try
                 {
-                    string queryCariLog = "SELECT * FROM vm_MenampilkanDaftarPeminjaman WHERE NamaPeminjam LIKE @search OR NamaAlat LIKE @search";
+                    string queryCariLog = "SELECT * FROM vm_MenampilkanDaftarPeminjaman WHERE [Nama Peminjam] LIKE @search OR [Nama Alat] LIKE @search";
                     SqlDataAdapter da = new SqlDataAdapter(queryCariLog, conn);
                     da.SelectCommand.Parameters.AddWithValue("@search", "%" + txtSearchTrans.Text.Trim() + "%");
 
