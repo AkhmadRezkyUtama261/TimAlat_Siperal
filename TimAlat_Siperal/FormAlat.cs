@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Reflection.Emit;
 using System.Windows.Forms;
 
 namespace TimAlat_Siperal
@@ -27,7 +26,7 @@ namespace TimAlat_Siperal
         private Panel panel1;
         private Panel panel2;
         private Button btnSearch;
-        private Button btnResetSearch;
+        private Button btnResetSearch; // Komponen tombol reset pencarian baru
         private Label label4;
         private TextBox txtKodeAlat;
         private TextBox txtSearch;
@@ -59,6 +58,7 @@ namespace TimAlat_Siperal
             TampilData();
         }
 
+        // ================= POIN 2, 4, & 5: SINKRONISASI DATA VIEW & BINDING SOURCE =================
         private void TampilData()
         {
             using (SqlConnection conn = konn.GetConn())
@@ -75,6 +75,7 @@ namespace TimAlat_Siperal
                     if (bindingNavigator1 != null)
                         bindingNavigator1.BindingSource = bs;
 
+                    // ================= DATA BINDING SAKTI TEXTBOX =================
                     txtKodeAlat.DataBindings.Clear();
                     txtNama.DataBindings.Clear();
                     txtStok.DataBindings.Clear();
@@ -93,22 +94,254 @@ namespace TimAlat_Siperal
                     MessageBox.Show("Error Tampil Data: " + ex.Message);
                 }
             }
+            HitungTotalStok();
         }
 
-        private void HitungTotalStok() { }
-        private void btnTambah_Click(object sender, EventArgs e) { }
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
-        private void btnUpdate_Click(object sender, EventArgs e) { }
-        private void btnDelete_Click(object sender, EventArgs e) { }
-        private void btnSearch_Click(object sender, EventArgs e) { }
-        private void btnResetSearch_Click(object sender, EventArgs e) { }
-        private void Bersihkan() { }
+        private void HitungTotalStok()
+        {
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand("SELECT SUM(Stok) FROM Alat", conn);
+                    object result = cmd.ExecuteScalar();
+
+                    if (label3 != null)
+                        label3.Text = "Total Stok: " + (result != DBNull.Value ? result.ToString() : "0");
+                }
+                catch (Exception)
+                {
+                    if (label3 != null) label3.Text = "Total Stok: 0";
+                }
+            }
+        }
+
+        // ================= POIN 1: STORED PROCEDURE INSERT =================
+        private void btnTambah_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtKodeAlat.Text) || string.IsNullOrWhiteSpace(txtNama.Text) || string.IsNullOrWhiteSpace(txtStok.Text) || string.IsNullOrWhiteSpace(txtMerek.Text))
+            {
+                MessageBox.Show("Semua kolom termasuk Merek tidak boleh kosong!");
+                return;
+            }
+
+            if (!int.TryParse(txtStok.Text, out int stokValid))
+            {
+                MessageBox.Show("Stok harus berupa angka!");
+                return;
+            }
+
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand("sp_TambahAlat", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@AlatID", txtKodeAlat.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Nama", txtNama.Text.Trim());
+                    cmd.Parameters.AddWithValue("@stok", stokValid);
+                    cmd.Parameters.AddWithValue("@Merek", txtMerek.Text.Trim());
+
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Data berhasil ditambahkan via SP!");
+                    TampilData();
+                    Bersihkan();
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvAlat.Rows[e.RowIndex];
+
+                if (row.Cells["alatID"].Value != null && row.Cells["alatID"].Value != DBNull.Value)
+                {
+                    idAlat = row.Cells["alatID"].Value.ToString();
+                    txtKodeAlat.Enabled = false;
+                }
+                else
+                {
+                    Bersihkan();
+                }
+            }
+        }
+
+        // ================= POIN 1: STORED PROCEDURE UPDATE =================
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (idAlat == "")
+            {
+                MessageBox.Show("Pilih data yang mau diubah dulu!");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtMerek.Text))
+            {
+                MessageBox.Show("Kolom Merek tidak boleh kosong saat melakukan update!");
+                return;
+            }
+
+            if (!int.TryParse(txtStok.Text, out int stokValid))
+            {
+                MessageBox.Show("Stok harus angka!");
+                return;
+            }
+
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand("sp_UpdateAlat", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@AlatID", idAlat);
+                    cmd.Parameters.AddWithValue("@Nama", txtNama.Text.Trim());
+                    cmd.Parameters.AddWithValue("@StokBaru", stokValid);
+                    cmd.Parameters.AddWithValue("@Merek", txtMerek.Text.Trim());
+
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Data berhasil diubah via SP!");
+                    TampilData();
+                    Bersihkan();
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        // ================= POIN 1: STORED PROCEDURE DELETE =================
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (idAlat == "")
+            {
+                MessageBox.Show("Pilih data yang mau dihapus!");
+                return;
+            }
+
+            if (MessageBox.Show("Yakin hapus?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                using (SqlConnection conn = konn.GetConn())
+                {
+                    try
+                    {
+                        conn.Open();
+                        SqlCommand cmd = new SqlCommand("sp_HapusAlat", conn);
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@AlatID", idAlat);
+                        cmd.ExecuteNonQuery();
+
+                        MessageBox.Show("Data berhasil dihapus via SP!");
+                        TampilData();
+                        Bersihkan();
+                    }
+                    catch (SqlException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        // ================= REVISI POIN 3: FITUR CARI VULNERABLE + GIMMICK HACKED ALL KOLOM =================
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            // DETEKSI DEMO: Jika textbox mengandung karakter injeksi seperti kutip tunggal (') atau double minus (--)
+            if (txtSearch.Text.Contains("'") || txtSearch.Text.Contains("--") || txtSearch.Text.ToLower().Contains("or"))
+            {
+                MessageBox.Show("🚨 WARNING: SYSTEM HACKED! 🚨\n\nSQL Injection Bypass Execution Succeeded!",
+                                "Security Breach Identified", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                using (SqlConnection conn = konn.GetConn())
+                {
+                    try
+                    {
+                        conn.Open();
+                        // JURUS MANIPULASI: Paksa SQL Server mereturn baris buatan dengan nilai teks "HACKED" di semua kolom tabel
+                        string queryJebol = "SELECT 'HACKED' AS alatID, 'SYSTEM HACKED' AS Nama_Alat, 'VULNERABLE' AS Merek, 0 AS Stok, 1 AS AdminID";
+
+                        SqlDataAdapter da = new SqlDataAdapter(queryJebol, conn);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        // Putus binding textbox sementara agar teks bertuliskan 'HACKED' tidak merusak memori tipe data stok (integer)
+                        txtKodeAlat.DataBindings.Clear();
+                        txtNama.DataBindings.Clear();
+                        txtStok.DataBindings.Clear();
+                        txtMerek.DataBindings.Clear();
+
+                        bs.DataSource = dt;
+                        dgvAlat.DataSource = bs;
+                        return; // Langsung potong alur keluar dari fungsi
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Gagal memunculkan efek manipulasi: " + ex.Message);
+                    }
+                }
+            }
+
+            // KONDISI PENCARIAN ALAT NORMAL (Tanpa Payload Injeksi)
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    string queryBocor = "SELECT * FROM vw_Alat WHERE Nama_Alat LIKE '%" + txtSearch.Text + "%'";
+
+                    SqlDataAdapter da = new SqlDataAdapter(queryBocor, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    bs.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("SQL Execution Alert (Template Base): " + ex.Message, "Database Log");
+                }
+            }
+        }
+
+        // ================= TOMBOL PENAWAR: RESET FILTER PENCARI DAN NORMALISASI KONDISI TABEL =================
+        private void btnResetSearch_Click(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            TampilData(); // Memulihkan data murni view serta mengikat kembali DataBinding TextBox kiri
+            MessageBox.Show("Sistem berhasil dipulihkan dari eksploitasi serangan siber.", "System Restored", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // ================= RESET FORM FORMALAT =================
+        private void Bersihkan()
+        {
+            txtKodeAlat.Text = "";
+            txtKodeAlat.Enabled = true;
+            txtNama.Text = "";
+            txtStok.Text = "";
+            txtMerek.Text = "";
+            txtSearch.Text = "";
+            idAlat = "";
+            TampilData();
+        }
+
         private void txtSearch_TextChanged(object sender, EventArgs e) { }
         private void label4_Click(object sender, EventArgs e) { }
         private void txtStok_TextChanged(object sender, EventArgs e) { }
         private void panel1_Paint(object sender, PaintEventArgs e) { }
         private void dgvAlat_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
+        // ================= BLOK DESIGNER COMPONENT =================
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -152,8 +385,12 @@ namespace TimAlat_Siperal
             this.bindingNavigator1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
-
-            this.dgvAlat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // dgvAlat
+            // 
+            this.dgvAlat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvAlat.BackgroundColor = System.Drawing.Color.White;
             this.dgvAlat.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAlat.Location = new System.Drawing.Point(670, 135);
@@ -163,7 +400,9 @@ namespace TimAlat_Siperal
             this.dgvAlat.TabIndex = 0;
             this.dgvAlat.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dgvAlat.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAlat_CellContentClick);
-
+            // 
+            // btnTambah
+            // 
             this.btnTambah.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
             this.btnTambah.FlatAppearance.BorderSize = 0;
             this.btnTambah.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -175,7 +414,9 @@ namespace TimAlat_Siperal
             this.btnTambah.Text = "Tambah";
             this.btnTambah.UseVisualStyleBackColor = false;
             this.btnTambah.Click += new System.EventHandler(this.btnTambah_Click);
-
+            // 
+            // btnUpdate
+            // 
             this.btnUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(196)))), ((int)(((byte)(15)))));
             this.btnUpdate.FlatAppearance.BorderSize = 0;
             this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -187,7 +428,9 @@ namespace TimAlat_Siperal
             this.btnUpdate.Text = "Update";
             this.btnUpdate.UseVisualStyleBackColor = false;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
-
+            // 
+            // btnDelete
+            // 
             this.btnDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
             this.btnDelete.FlatAppearance.BorderSize = 0;
             this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -199,12 +442,16 @@ namespace TimAlat_Siperal
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = false;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-
+            // 
+            // txtNama
+            // 
             this.txtNama.Location = new System.Drawing.Point(100, 119);
             this.txtNama.Name = "txtNama";
             this.txtNama.Size = new System.Drawing.Size(210, 22);
             this.txtNama.TabIndex = 3;
-
+            // 
+            // btnTampil
+            // 
             this.btnTampil.BackColor = System.Drawing.Color.DarkGray;
             this.btnTampil.FlatAppearance.BorderSize = 0;
             this.btnTampil.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -216,26 +463,34 @@ namespace TimAlat_Siperal
             this.btnTampil.Text = "Refresh Data";
             this.btnTampil.UseVisualStyleBackColor = false;
             this.btnTampil.Click += new System.EventHandler(this.btnTampil_Click);
-
+            // 
+            // txtStok
+            // 
             this.txtStok.Location = new System.Drawing.Point(100, 165);
             this.txtStok.Name = "txtStok";
             this.txtStok.Size = new System.Drawing.Size(210, 22);
             this.txtStok.TabIndex = 4;
-
+            // 
+            // label2
+            // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(20, 165);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(34, 16);
             this.label2.TabIndex = 2;
             this.label2.Text = "Stok";
-
+            // 
+            // label1
+            // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(20, 122);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(70, 16);
             this.label1.TabIndex = 1;
             this.label1.Text = "Nama Alat";
-
+            // 
+            // label3
+            // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.label3.Location = new System.Drawing.Point(459, 405);
@@ -243,7 +498,9 @@ namespace TimAlat_Siperal
             this.label3.Size = new System.Drawing.Size(112, 23);
             this.label3.TabIndex = 9;
             this.label3.Text = "Total Stok: 0";
-
+            // 
+            // panel1
+            // 
             this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panel1.Controls.Add(this.bindingNavigator1);
             this.panel1.Controls.Add(this.dgvAlat);
@@ -260,7 +517,9 @@ namespace TimAlat_Siperal
             this.panel1.TabIndex = 9;
             this.panel1.Tag = "s";
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-
+            // 
+            // bindingNavigator1
+            // 
             this.bindingNavigator1.AddNewItem = this.bindingNavigatorAddNewItem1;
             this.bindingNavigator1.CountItem = this.bindingNavigatorCountItem;
             this.bindingNavigator1.DeleteItem = this.bindingNavigatorDeleteItem1;
@@ -288,43 +547,57 @@ namespace TimAlat_Siperal
             this.bindingNavigator1.Size = new System.Drawing.Size(302, 27);
             this.bindingNavigator1.TabIndex = 14;
             this.bindingNavigator1.Text = "bindingNavigator1";
-
+            // 
+            // bindingNavigatorAddNewItem1
+            // 
             this.bindingNavigatorAddNewItem1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorAddNewItem1.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem1.Image")));
             this.bindingNavigatorAddNewItem1.Name = "bindingNavigatorAddNewItem1";
             this.bindingNavigatorAddNewItem1.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorAddNewItem1.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorAddNewItem1.Text = "Add new";
-
+            // 
+            // bindingNavigatorCountItem
+            // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
             this.bindingNavigatorCountItem.Size = new System.Drawing.Size(45, 24);
             this.bindingNavigatorCountItem.Text = "of {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number of items";
-
+            // 
+            // bindingNavigatorDeleteItem1
+            // 
             this.bindingNavigatorDeleteItem1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorDeleteItem1.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem1.Image")));
             this.bindingNavigatorDeleteItem1.Name = "bindingNavigatorDeleteItem1";
             this.bindingNavigatorDeleteItem1.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorDeleteItem1.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorDeleteItem1.Text = "Delete";
-
+            // 
+            // bindingNavigatorMoveFirstItem
+            // 
             this.bindingNavigatorMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorMoveFirstItem.Text = "Move first";
-
+            // 
+            // bindingNavigatorMovePreviousItem
+            // 
             this.bindingNavigatorMovePreviousItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorMovePreviousItem.Text = "Move previous";
-
+            // 
+            // bindingNavigatorSeparator
+            // 
             this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
             this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 27);
-
+            // 
+            // bindingNavigatorPositionItem
+            // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
             this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -332,27 +605,37 @@ namespace TimAlat_Siperal
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
             this.bindingNavigatorPositionItem.Text = "0";
             this.bindingNavigatorPositionItem.ToolTipText = "Current position";
-
+            // 
+            // bindingNavigatorSeparator1
+            // 
             this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
             this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 27);
-
+            // 
+            // bindingNavigatorMoveNextItem
+            // 
             this.bindingNavigatorMoveNextItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorMoveNextItem.Text = "Move next";
-
+            // 
+            // bindingNavigatorMoveLastItem
+            // 
             this.bindingNavigatorMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorMoveLastItem.Text = "Move last";
-
+            // 
+            // bindingNavigatorSeparator2
+            // 
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
             this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 27);
-
+            // 
+            // btnSearch
+            // 
             this.btnSearch.Location = new System.Drawing.Point(1030, 98);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(100, 26);
@@ -360,7 +643,9 @@ namespace TimAlat_Siperal
             this.btnSearch.Text = "CARI DATA";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
-
+            // 
+            // btnResetSearch
+            // 
             this.btnResetSearch.Location = new System.Drawing.Point(1140, 98);
             this.btnResetSearch.Name = "btnResetSearch";
             this.btnResetSearch.Size = new System.Drawing.Size(100, 26);
@@ -368,12 +653,16 @@ namespace TimAlat_Siperal
             this.btnResetSearch.Text = "RESET DATA";
             this.btnResetSearch.UseVisualStyleBackColor = true;
             this.btnResetSearch.Click += new System.EventHandler(this.btnResetSearch_Click);
-
+            // 
+            // txtSearch
+            // 
             this.txtSearch.Location = new System.Drawing.Point(670, 100);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(350, 22);
             this.txtSearch.TabIndex = 12;
-
+            // 
+            // panel2
+            // 
             this.panel2.BackColor = System.Drawing.Color.White;
             this.panel2.Controls.Add(this.txtMerek);
             this.panel2.Controls.Add(this.label5);
@@ -390,37 +679,51 @@ namespace TimAlat_Siperal
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(340, 302);
             this.panel2.TabIndex = 11;
-
+            // 
+            // txtMerek
+            // 
             this.txtMerek.Location = new System.Drawing.Point(100, 81);
             this.txtMerek.Name = "txtMerek";
             this.txtMerek.Size = new System.Drawing.Size(210, 22);
             this.txtMerek.TabIndex = 12;
-
+            // 
+            // label5
+            // 
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(20, 81);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(45, 16);
             this.label5.TabIndex = 11;
             this.label5.Text = "Merek";
-
+            // 
+            // label4
+            // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(20, 33);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(65, 16);
             this.label4.TabIndex = 10;
             this.label4.Text = "Kode Alat";
-
+            // 
+            // txtKodeAlat
+            // 
             this.txtKodeAlat.Location = new System.Drawing.Point(100, 30);
             this.txtKodeAlat.Name = "txtKodeAlat";
             this.txtKodeAlat.Size = new System.Drawing.Size(210, 22);
             this.txtKodeAlat.TabIndex = 9;
-
+            // 
+            // bindingNavigatorAddNewItem
+            // 
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 23);
-
+            // 
+            // bindingNavigatorDeleteItem
+            // 
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 23);
-
+            // 
+            // FormAlat
+            // 
             this.ClientSize = new System.Drawing.Size(1400, 700);
             this.Controls.Add(this.panel1);
             this.Name = "FormAlat";
@@ -433,157 +736,7 @@ namespace TimAlat_Siperal
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
+
         }
-    }
-}
-
-private void HitungTotalStok()
-{
-    using (SqlConnection conn = konn.GetConn())
-    {
-        try
-        {
-            conn.Open();
-            SqlCommand cmd = new SqlCommand("SELECT SUM(Stok) FROM Alat", conn);
-            object result = cmd.ExecuteScalar();
-
-            if (label3 != null)
-                label3.Text = "Total Stok: " + (result != DBNull.Value ? result.ToString() : "0");
-        }
-        catch (Exception)
-        {
-            if (label3 != null) label3.Text = "Total Stok: 0";
-        }
-    }
-}
-
-private void btnTambah_Click(object sender, EventArgs e)
-{
-    if (string.IsNullOrWhiteSpace(txtKodeAlat.Text) || string.IsNullOrWhiteSpace(txtNama.Text) || string.IsNullOrWhiteSpace(txtStok.Text) || string.IsNullOrWhiteSpace(txtMerek.Text))
-    {
-        MessageBox.Show("Semua kolom termasuk Merek tidak boleh kosong!"); return;
-    }
-    if (!int.TryParse(txtStok.Text, out int stokValid)) { MessageBox.Show("Stok harus berupa angka!"); return; }
-
-    using (SqlConnection conn = konn.GetConn())
-    {
-        try
-        {
-            conn.Open();
-            SqlCommand cmd = new SqlCommand("sp_TambahAlat", conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@AlatID", txtKodeAlat.Text.Trim());
-            cmd.Parameters.AddWithValue("@Nama", txtNama.Text.Trim());
-            cmd.Parameters.AddWithValue("@stok", stokValid);
-            cmd.Parameters.AddWithValue("@Merek", txtMerek.Text.Trim());
-            cmd.ExecuteNonQuery();
-            MessageBox.Show("Data berhasil ditambahkan via SP!");
-            TampilData(); Bersihkan();
-        }
-        catch (SqlException ex) { MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-    }
-}
-
-private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-{
-    if (e.RowIndex >= 0)
-    {
-        DataGridViewRow row = dgvAlat.Rows[e.RowIndex];
-        if (row.Cells["alatID"].Value != null && row.Cells["alatID"].Value != DBNull.Value)
-        {
-            idAlat = row.Cells["alatID"].Value.ToString();
-            txtKodeAlat.Enabled = false;
-        }
-        else { Bersihkan(); }
-    }
-}
-
-private void btnUpdate_Click(object sender, EventArgs e)
-{
-    if (idAlat == "") { MessageBox.Show("Pilih data yang mau diubah dulu!"); return; }
-    if (string.IsNullOrWhiteSpace(txtMerek.Text)) { MessageBox.Show("Kolom Merek tidak boleh kosong saat melakukan update!"); return; }
-    if (!int.TryParse(txtStok.Text, out int stokValid)) { MessageBox.Show("Stok harus angka!"); return; }
-
-    using (SqlConnection conn = konn.GetConn())
-    {
-        try
-        {
-            conn.Open();
-            SqlCommand cmd = new SqlCommand("sp_UpdateAlat", conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@AlatID", idAlat);
-            cmd.Parameters.AddWithValue("@Nama", txtNama.Text.Trim());
-            cmd.Parameters.AddWithValue("@StokBaru", stokValid);
-            cmd.Parameters.AddWithValue("@Merek", txtMerek.Text.Trim());
-            cmd.ExecuteNonQuery();
-            MessageBox.Show("Data berhasil diubah via SP!");
-            TampilData(); Bersihkan();
-        }
-        catch (SqlException ex) { MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-    }
-}
-
-private void btnDelete_Click(object sender, EventArgs e)
-{
-    if (idAlat == "") { MessageBox.Show("Pilih data yang mau dihapus!"); return; }
-    if (MessageBox.Show("Yakin hapus?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
-    {
-        using (SqlConnection conn = konn.GetConn())
-        {
-            try
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("sp_HapusAlat", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@AlatID", idAlat);
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Data berhasil dihapus via SP!");
-                TampilData(); Bersihkan();
-            }
-            catch (SqlException ex) { MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-        }
-    }
-}
-
-
-private void btnSearch_Click(object sender, EventArgs e)
-{
-    if (txtSearch.Text.Contains("'") || txtSearch.Text.Contains("--") || txtSearch.Text.ToLower().Contains("or"))
-    {
-        MessageBox.Show("🚨 WARNING: SYSTEM HACKED! 🚨\n\nSQL Injection Bypass Execution Succeeded!", "Security Breach Identified", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        using (SqlConnection conn = konn.GetConn())
-        {
-            try
-            {
-                conn.Open();
-                string queryJebol = "SELECT 'HACKED' AS alatID, 'SYSTEM HACKED' AS Nama_Alat, 'VULNERABLE' AS Merek, 0 AS Stok, 1 AS AdminID";
-                SqlDataAdapter da = new SqlDataAdapter(queryJebol, conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-
-                txtKodeAlat.DataBindings.Clear();
-                txtNama.DataBindings.Clear();
-                txtStok.DataBindings.Clear();
-                txtMerek.DataBindings.Clear();
-
-                bs.DataSource = dt;
-                dgvAlat.DataSource = bs;
-                return;
-            }
-            catch (Exception ex) { MessageBox.Show("Gagal memunculkan efek manipulasi: " + ex.Message); }
-        }
-    }
-
-    using (SqlConnection conn = konn.GetConn())
-    {
-        try
-        {
-            string queryBocor = "SELECT * FROM vw_Alat WHERE Nama_Alat LIKE '%" + txtSearch.Text + "%'";
-            SqlDataAdapter da = new SqlDataAdapter(queryBocor, conn);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            bs.DataSource = dt;
-        }
-        catch (Exception ex) { MessageBox.Show("SQL Execution Alert (Template Base): " + ex.Message, "Database Log"); }
     }
 }
