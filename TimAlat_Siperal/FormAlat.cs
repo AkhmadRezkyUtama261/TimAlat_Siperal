@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Reflection.Emit;
 using System.Windows.Forms;
 
 namespace TimAlat_Siperal
@@ -432,6 +433,26 @@ namespace TimAlat_Siperal
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
+        }
+    }
+}
+
+private void HitungTotalStok()
+{
+    using (SqlConnection conn = konn.GetConn())
+    {
+        try
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("SELECT SUM(Stok) FROM Alat", conn);
+            object result = cmd.ExecuteScalar();
+
+            if (label3 != null)
+                label3.Text = "Total Stok: " + (result != DBNull.Value ? result.ToString() : "0");
+        }
+        catch (Exception)
+        {
+            if (label3 != null) label3.Text = "Total Stok: 0";
         }
     }
 }
