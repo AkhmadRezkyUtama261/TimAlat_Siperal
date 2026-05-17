@@ -17,72 +17,52 @@ namespace TimAlat_Siperal
             InitializeComponent();
         }
 
-        private void panelSidebar_Paint(object sender, PaintEventArgs e)
-        {
-            panelSidebar.BackColor = Color.White;
-            Graphics g = e.Graphics;
-            using (Pen pen = new Pen(Color.FromArgb(230, 233, 237), 1))
-            {
-                g.DrawLine(pen, panelSidebar.Width - 1, 0, panelSidebar.Width - 1, panelSidebar.Height);
-            }
-        }
-
         private void Dasboard_Load(object sender, EventArgs e)
         {
             this.BackColor = Color.FromArgb(248, 249, 250);
             this.WindowState = FormWindowState.Maximized;
             panelSidebar.Dock = DockStyle.Left;
 
-            label1.Text = "SIPERAL";
-            label1.Font = new Font("Segoe UI", 16, FontStyle.Bold);
-            label1.ForeColor = Color.FromArgb(44, 53, 64);
+            TarikDataDariDatabase();
 
-            label2.Text = "MANAGEMENT SYSTEM";
-            label2.ForeColor = Color.DarkGray;
+            int padding = 40; int lebarKartu = 280; int jarakAntarKartu = 20;
+            int posisiX1 = panelSidebar.Width + padding;
+            int posisiX2 = posisiX1 + lebarKartu + jarakAntarKartu;
+            int posisiX3 = posisiX2 + lebarKartu + jarakAntarKartu;
 
-            RapikanTombolUMY(btnDashboardUtama, 130);
-            RapikanTombolUMY(btnDataPengguna, 195);
-            RapikanTombolUMY(btnKeDataAlat, 260);
-            RapikanTombolUMY(btnTransaksi, 325);
+            card1.Location = new Point(posisiX1, 120);
+            card2.Location = new Point(posisiX2, 120);
+            card3.Location = new Point(posisiX3, 120);
+        }
 
-            if (btnLogout != null)
+        private void TarikDataDariDatabase()
+        {
+            using (SqlConnection conn = new SqlConnection(koneksi))
             {
-                RapikanTombolLogoutHCI(btnLogout, panelSidebar.Height - 80);
-                btnLogout.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd1 = new SqlCommand("SELECT ISNULL(SUM(Stok), 0) FROM Alat", conn);
+                    PolesKartu(card1, "Total Alat RT", cmd1.ExecuteScalar().ToString(), Color.FromArgb(141, 19, 36));
+
+                    SqlCommand cmd2 = new SqlCommand("SELECT COUNT(*) FROM Peminjaman WHERE Status='DIPINJAM'", conn);
+                    PolesKartu(card2, "Peminjaman Active", cmd2.ExecuteScalar().ToString(), Color.FromArgb(0, 150, 136));
+
+                    SqlCommand cmd3 = new SqlCommand("SELECT COUNT(*) FROM Peminjam", conn);
+                    PolesKartu(card3, "Total Pengguna", cmd3.ExecuteScalar().ToString(), Color.FromArgb(52, 73, 94));
+                }
+                catch (Exception ex) { MessageBox.Show("Gagal hitung kartu dashboard: " + ex.Message); }
             }
         }
 
-        private void RapikanTombolUMY(Button btn, int posisiY)
+        private void PolesKartu(Panel pnl, string judul, string angka, Color aksen)
         {
-            if (btn == null) return;
-            btn.Size = new Size(210, 50);
-            btn.Location = new Point(20, posisiY);
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderSize = 0;
-            btn.BackColor = Color.Transparent;
-            btn.ForeColor = Color.FromArgb(64, 74, 88);
-            btn.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            btn.TextAlign = ContentAlignment.MiddleLeft;
-
-            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(141, 19, 36);
-            btn.MouseEnter += (s, e) => { btn.ForeColor = Color.White; };
-            btn.MouseLeave += (s, e) => { btn.ForeColor = Color.FromArgb(64, 74, 88); };
-        }
-
-        private void RapikanTombolLogoutHCI(Button btn, int posisiY)
-        {
-            btn.Size = new Size(210, 50);
-            btn.Location = new Point(20, posisiY);
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderSize = 0;
-            btn.BackColor = Color.Transparent;
-            btn.ForeColor = Color.FromArgb(231, 76, 60);
-            btn.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            btn.TextAlign = ContentAlignment.MiddleLeft;
-
-            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(231, 76, 60);
-            btn.MouseEnter += (s, e) => { btn.ForeColor = Color.White; };
-            btn.MouseLeave += (s, e) => { btn.ForeColor = Color.FromArgb(231, 76, 60); };
+            pnl.Controls.Clear();
+            pnl.BackColor = Color.White;
+            pnl.Size = new Size(280, 130); pnl.BorderStyle = BorderStyle.None;
+            pnl.Controls.Add(new Label { Text = judul, Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.Gray, Location = new Point(20, 20), AutoSize = true });
+            pnl.Controls.Add(new Label { Text = angka, Font = new Font("Segoe UI", 32, FontStyle.Bold), ForeColor = Color.FromArgb(44, 53, 64), Location = new Point(15, 45), AutoSize = true });
+            pnl.Controls.Add(new Panel { BackColor = aksen, Size = new Size(pnl.Width, 5), Dock = DockStyle.Bottom });
         }
     }
 }
