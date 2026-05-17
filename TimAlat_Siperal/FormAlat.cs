@@ -169,3 +169,45 @@ private void btnDelete_Click(object sender, EventArgs e)
         }
     }
 }
+
+private void btnSearch_Click(object sender, EventArgs e)
+{
+    if (txtSearch.Text.Contains("'") || txtSearch.Text.Contains("--") || txtSearch.Text.ToLower().Contains("or"))
+    {
+        MessageBox.Show("🚨 WARNING: SYSTEM HACKED! 🚨\n\nSQL Injection Bypass Execution Succeeded!", "Security Breach Identified", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        using (SqlConnection conn = konn.GetConn())
+        {
+            try
+            {
+                conn.Open();
+                string queryJebol = "SELECT 'HACKED' AS alatID, 'SYSTEM HACKED' AS Nama_Alat, 'VULNERABLE' AS Merek, 0 AS Stok, 1 AS AdminID";
+                SqlDataAdapter da = new SqlDataAdapter(queryJebol, conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                txtKodeAlat.DataBindings.Clear();
+                txtNama.DataBindings.Clear();
+                txtStok.DataBindings.Clear();
+                txtMerek.DataBindings.Clear();
+
+                bs.DataSource = dt;
+                dgvAlat.DataSource = bs;
+                return;
+            }
+            catch (Exception ex) { MessageBox.Show("Gagal memunculkan efek manipulasi: " + ex.Message); }
+        }
+    }
+
+    using (SqlConnection conn = konn.GetConn())
+    {
+        try
+        {
+            string queryBocor = "SELECT * FROM vw_Alat WHERE Nama_Alat LIKE '%" + txtSearch.Text + "%'";
+            SqlDataAdapter da = new SqlDataAdapter(queryBocor, conn);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            bs.DataSource = dt;
+        }
+        catch (Exception ex) { MessageBox.Show("SQL Execution Alert (Template Base): " + ex.Message, "Database Log"); }
+    }
+}
