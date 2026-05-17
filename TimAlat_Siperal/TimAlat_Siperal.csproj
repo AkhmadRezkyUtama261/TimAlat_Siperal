@@ -165,5 +165,9 @@
   <ItemGroup>
     <None Include="Resources\windows_11_wallpaper_dark_mode_by_vyachachsel_del784t-fullview.jpg" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="SQL\PeminjamanAlat .sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
