@@ -7,6 +7,7 @@ namespace TimAlat_Siperal
 {
     public partial class FormLogin : Form
     {
+        // Kunci 2-Tier: Koneksi ke database
         private readonly string koneksi = @"Data Source=LAPTOP-7SOCNODM\ANDHIKA1;Initial Catalog=DBPeminjamanAlat;Integrated Security=True";
 
         public FormLogin()
@@ -64,6 +65,7 @@ namespace TimAlat_Siperal
             label1.Text = "Username";
             label1.Font = new Font("Segoe UI", 9, FontStyle.Regular);
             label1.Location = new Point(40, 140);
+            label1.BackColor = Color.Transparent;
 
             textBox1.Size = new Size(240, 30);
             textBox1.Location = new Point(40, 160);
@@ -72,6 +74,7 @@ namespace TimAlat_Siperal
             label2.Text = "Password";
             label2.Font = new Font("Segoe UI", 9, FontStyle.Regular);
             label2.Location = new Point(40, 200);
+            label2.BackColor = Color.Transparent;
 
             textBox2.Size = new Size(240, 30);
             textBox2.Location = new Point(40, 220);
@@ -85,6 +88,7 @@ namespace TimAlat_Siperal
             btnLoginBaru.BackColor = Color.DodgerBlue;
             btnLoginBaru.ForeColor = Color.White;
             btnLoginBaru.FlatStyle = FlatStyle.Flat;
+            btnLoginBaru.FlatAppearance.BorderSize = 0;
             btnLoginBaru.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             btnLoginBaru.Cursor = Cursors.Hand;
 
@@ -104,6 +108,7 @@ namespace TimAlat_Siperal
             }
         }
 
+        // ================= MULTI-ROLE LOGIN DATABASE (FIXED) =================
         private void btnLogin_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(textBox1.Text) || string.IsNullOrEmpty(textBox2.Text))
@@ -111,6 +116,53 @@ namespace TimAlat_Siperal
                 MessageBox.Show("Silakan isi Username dan Password terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            using (SqlConnection conn = new SqlConnection(koneksi))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // JURUS UNION: Memeriksa dua tabel sekaligus (Admin & Petugas) dalam satu ketukan query
+                    string queryMultiRole = @"
+                        SELECT 'ADMIN' AS Role FROM Admin WHERE username = @user AND password = @pass
+                        UNION
+                        SELECT 'PETUGAS' AS Role FROM Petugas WHERE username = @user AND password = @pass";
+
+                    using (SqlCommand cmd = new SqlCommand(queryMultiRole, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@user", textBox1.Text.Trim());
+                        cmd.Parameters.AddWithValue("@pass", textBox2.Text.Trim());
+
+                        object objResult = cmd.ExecuteScalar();
+
+                        if (objResult != null)
+                        {
+                            string roleTerdeteksi = objResult.ToString();
+
+                            MessageBox.Show($"Login Berhasil sebagai {roleTerdeteksi}!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            // Lempar status Role Login murni ke Dashboard utama kelompokmu
+                            Dasboard utama = new Dasboard();
+                            utama.RoleLogin = roleTerdeteksi;
+
+                            utama.Show();
+                            this.Hide();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Username atau Password salah!", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal terhubung ke database saat login: " + ex.Message, "Error Koneksi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
+
+        private void panel1_Paint(object sender, PaintEventArgs e) { }
+        private void label3_Click(object sender, EventArgs e) { }
     }
 }
