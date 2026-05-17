@@ -211,3 +211,16 @@ private void btnSearch_Click(object sender, EventArgs e)
         catch (Exception ex) { MessageBox.Show("SQL Execution Alert (Template Base): " + ex.Message, "Database Log"); }
     }
 }
+
+private void btnResetSearch_Click(object sender, EventArgs e)
+{
+    txtSearch.Text = "";
+    TampilData();
+    MessageBox.Show("Sistem berhasil dipulihkan dari eksploitasi serangan siber.", "System Restored", MessageBoxButtons.OK, MessageBoxIcon.Information);
+}
+
+private void Bersihkan()
+{
+    txtKodeAlat.Text = ""; txtKodeAlat.Enabled = true; txtNama.Text = ""; txtStok.Text = ""; txtMerek.Text = ""; txtSearch.Text = ""; idAlat = "";
+    TampilData();
+}
