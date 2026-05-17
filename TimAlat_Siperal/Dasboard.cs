@@ -27,12 +27,10 @@ namespace TimAlat_Siperal
 
             int padding = 40; int lebarKartu = 280; int jarakAntarKartu = 20;
             int posisiX1 = panelSidebar.Width + padding;
-            int posisiX2 = posisiX1 + lebarKartu + jarakAntarKartu;
-            int posisiX3 = posisiX2 + lebarKartu + jarakAntarKartu;
 
-            card1.Location = new Point(posisiX1, 120);
-            card2.Location = new Point(posisiX2, 120);
-            card3.Location = new Point(posisiX3, 120);
+            dgvActivity.Location = new Point(posisiX1, 280);
+            dgvActivity.Width = (lebarKartu * 3) + (jarakAntarKartu * 2);
+            dgvActivity.Height = 450;
         }
 
         private void TarikDataDariDatabase()
@@ -42,27 +40,44 @@ namespace TimAlat_Siperal
                 try
                 {
                     conn.Open();
-                    SqlCommand cmd1 = new SqlCommand("SELECT ISNULL(SUM(Stok), 0) FROM Alat", conn);
-                    PolesKartu(card1, "Total Alat RT", cmd1.ExecuteScalar().ToString(), Color.FromArgb(141, 19, 36));
+                    string queryTabel = "SELECT TOP 5 * FROM vm_MenampilkanDaftarPeminjaman ORDER BY Tanggal_Pinjam DESC";
+                    SqlDataAdapter da = new SqlDataAdapter(queryTabel, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
-                    SqlCommand cmd2 = new SqlCommand("SELECT COUNT(*) FROM Peminjaman WHERE Status='DIPINJAM'", conn);
-                    PolesKartu(card2, "Peminjaman Active", cmd2.ExecuteScalar().ToString(), Color.FromArgb(0, 150, 136));
+                    dgvActivity.Columns.Clear();
+                    dgvActivity.DataSource = dt;
 
-                    SqlCommand cmd3 = new SqlCommand("SELECT COUNT(*) FROM Peminjam", conn);
-                    PolesKartu(card3, "Total Pengguna", cmd3.ExecuteScalar().ToString(), Color.FromArgb(52, 73, 94));
+                    if (dgvActivity.Columns.Count >= 7)
+                    {
+                        dgvActivity.Columns[0].HeaderText = "ID";
+                        dgvActivity.Columns[1].HeaderText = "PETUGAS";
+                        dgvActivity.Columns[2].HeaderText = "NAMA PEMINJAM";
+                        dgvActivity.Columns[3].HeaderText = "ALAT";
+                        dgvActivity.Columns[4].HeaderText = "TANGGAL PINJAM";
+                        dgvActivity.Columns[5].HeaderText = "JUMLAH";
+                        dgvActivity.Columns[6].HeaderText = "STATUS";
+                    }
+                    PolesTabelModern();
                 }
-                catch (Exception ex) { MessageBox.Show("Gagal hitung kartu dashboard: " + ex.Message); }
+                catch (Exception ex) { MessageBox.Show("Gagal muat tabel dashboard: " + ex.Message); }
             }
         }
 
-        private void PolesKartu(Panel pnl, string judul, string angka, Color aksen)
+        private void PolesTabelModern()
         {
-            pnl.Controls.Clear();
-            pnl.BackColor = Color.White;
-            pnl.Size = new Size(280, 130); pnl.BorderStyle = BorderStyle.None;
-            pnl.Controls.Add(new Label { Text = judul, Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.Gray, Location = new Point(20, 20), AutoSize = true });
-            pnl.Controls.Add(new Label { Text = angka, Font = new Font("Segoe UI", 32, FontStyle.Bold), ForeColor = Color.FromArgb(44, 53, 64), Location = new Point(15, 45), AutoSize = true });
-            pnl.Controls.Add(new Panel { BackColor = aksen, Size = new Size(pnl.Width, 5), Dock = DockStyle.Bottom });
+            dgvActivity.BackgroundColor = Color.White;
+            dgvActivity.BorderStyle = BorderStyle.None;
+            dgvActivity.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvActivity.EnableHeadersVisualStyles = false;
+            dgvActivity.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 250);
+            dgvActivity.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
+            dgvActivity.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvActivity.ColumnHeadersHeight = 45;
+            dgvActivity.RowTemplate.Height = 40;
+            dgvActivity.RowHeadersVisible = false;
+            dgvActivity.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvActivity.ReadOnly = true;
         }
     }
 }
