@@ -202,3 +202,45 @@ private void dgvPeminjaman_CellClick(object sender, DataGridViewCellEventArgs e)
         }
     }
 }
+
+private void btnSimpan_Click(object sender, EventArgs e)
+{
+    if (cbAlat.SelectedIndex <= 0 || cbAlat.Text.StartsWith("---"))
+    {
+        MessageBox.Show("Silakan pilih alat yang valid terlebih dahulu!"); return;
+    }
+    if (txtJumlah == null || !int.TryParse(txtJumlah.Text, out int jmlPinjam) || jmlPinjam <= 0)
+    {
+        MessageBox.Show("Jumlah pinjam harus berupa angka bulat dan minimal 1!"); return;
+    }
+
+    int stokTersedia = int.Parse(lblStok.Text);
+    if (jmlPinjam > stokTersedia)
+    {
+        MessageBox.Show("Stok alat tidak mencukupi untuk dipinjam!"); return;
+    }
+
+    string selectedText = cbAlat.SelectedItem.ToString();
+    int indexBukaKurung = selectedText.LastIndexOf('(');
+    int indexTutupKurung = selectedText.LastIndexOf(')');
+    string idAlatAsli = selectedText.Substring(indexBukaKurung + 1, indexTutupKurung - indexBukaKurung - 1);
+
+    using (SqlConnection conn = konn.GetConn())
+    {
+        try
+        {
+            conn.Open();
+            SqlCommand cmdSP = new SqlCommand("sp_TambahPinjam", conn);
+            cmdSP.CommandType = CommandType.StoredProcedure;
+            cmdSP.Parameters.AddWithValue("@petugasID", 1);
+            cmdSP.Parameters.AddWithValue("@peminjamID", idPeminjamTerpilih);
+            cmdSP.Parameters.AddWithValue("@alatID", idAlatAsli);
+            cmdSP.Parameters.AddWithValue("@jumlah_Pinjam", jmlPinjam);
+
+            cmdSP.ExecuteNonQuery();
+            MessageBox.Show("Transaksi Peminjaman Berhasil Disimpan via Stored Procedure!", "Sukses");
+            ShowData(); LoadAlatUnik(); Bersihkan();
+        }
+        catch (Exception ex) { MessageBox.Show("Gagal menyimpan transaksi: " + ex.Message); }
+    }
+}
