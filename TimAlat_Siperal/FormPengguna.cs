@@ -60,3 +60,18 @@ namespace TimAlat_Siperal
         private void btnSearch_Click_1(object sender, EventArgs e) { }
     }
 }
+
+private void FormPengguna_Load(object sender, EventArgs e)
+{
+    this.BackColor = Color.FromArgb(245, 246, 250);
+    dgvPengguna.BackgroundColor = Color.White;
+    dgvPengguna.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+    if (StatusAkses == "PETUGAS")
+    {
+        if (btnHapus != null) btnHapus.Visible = false;
+        if (btnSimpan != null) btnSimpan.Visible = true;
+        if (btnUbah != null) btnUbah.Visible = true;
+        this.Text = "Kelola Warga Cepat (Mode Operasional Petugas)";
+    }
+}
