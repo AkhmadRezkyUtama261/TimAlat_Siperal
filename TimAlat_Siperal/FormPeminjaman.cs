@@ -29,7 +29,6 @@ namespace TimAlat_Siperal
                 try
                 {
                     conn.Open();
-                    // PENATAAN JOIN TABEL EMAK ANAK BERDASARKAN RELASI NIK
                     string sql = @"SELECT p.peminjamanID AS [ID], m.Nama_Peminjam AS [Nama Warga], 
                                    a.Nama_Alat AS [Alat], p.Jumlah_Pinjam AS [Jumlah], 
                                    p.Tanggal_Pinjam AS [Tanggal], p.Status AS [Status]
@@ -42,7 +41,7 @@ namespace TimAlat_Siperal
                     da.Fill(dt);
                     dgvPeminjaman.DataSource = dt;
                 }
-                catch (Exception ex) { MessageBox.Show("Gagal Load Tabel Emak Anak: " + ex.Message); }
+                catch (Exception ex) { MessageBox.Show("Gagal Load Tabel: " + ex.Message); }
             }
         }
 
@@ -65,14 +64,16 @@ namespace TimAlat_Siperal
 
         private void btnCari_Click(object sender, EventArgs e)
         {
+            // REVISI ATURAN: INPUT NIK SEKARANG BISA DIGANTI CARI BERDASARKAN NAMA KEMUDIAN
             if (string.IsNullOrEmpty(txtNIK.Text)) return;
             using (SqlConnection conn = konn.GetConn())
             {
                 try
                 {
                     conn.Open();
-                    cmd = new SqlCommand("SELECT Nama_Peminjam, Alamat FROM Peminjam WHERE NIK = @nik", conn);
+                    cmd = new SqlCommand("SELECT Nama_Peminjam, Alamat FROM Peminjam WHERE NIK = @nik OR Nama_Peminjam LIKE @nama", conn);
                     cmd.Parameters.AddWithValue("@nik", txtNIK.Text.Trim());
+                    cmd.Parameters.AddWithValue("@nama", "%" + txtNIK.Text.Trim() + "%");
                     dr = cmd.ExecuteReader();
                     if (dr.Read())
                     {
@@ -156,7 +157,7 @@ namespace TimAlat_Siperal
                         int jml = Convert.ToInt32(dr["Jumlah_Pinjam"]);
                         dr.Close();
 
-                        cmd = new SqlCommand("UPDATE Peminjaman SET Status = 'TERSEDIA' WHERE peminjamanID = @id", conn);
+                        cmd = new SqlCommand("UPDATE Peminjaman SET Status = 'DIKEMBALIKAN' WHERE peminjamanID = @id", conn);
                         cmd.Parameters.AddWithValue("@id", idTerpilih);
                         cmd.ExecuteNonQuery();
 
