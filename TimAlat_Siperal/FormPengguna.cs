@@ -7,7 +7,6 @@ namespace TimAlat_Siperal
 {
     public partial class FormPengguna : Form
     {
-        // KONEKSI SESUAI REVISI ARSITEKTUR KELAS 3 TIER
         Koneksi konn = new Koneksi();
         SqlDataAdapter da;
         DataTable dt;
@@ -31,29 +30,23 @@ namespace TimAlat_Siperal
                     da.Fill(dt);
                     dgvPengguna.DataSource = dt;
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error Tampil Data: " + ex.Message);
-                }
+                catch (Exception ex) { MessageBox.Show("Error Tampil Data: " + ex.Message); }
             }
         }
 
         void Bersihkan()
         {
-            txtNIK.Clear();
-            txtNama.Clear();
-            txtAlamat.Clear();
-            txtTelp.Clear();
-            nikLama = "";
-            txtNIK.Enabled = true;
-            txtNIK.Focus();
+            txtNIK.Clear(); txtNama.Clear(); txtAlamat.Clear(); txtTelp.Clear();
+            nikLama = ""; txtNIK.Enabled = true; txtNIK.Focus();
         }
 
         private void btnSimpan_Click(object sender, EventArgs e)
         {
+            // VALIDASI DATA PENGGUNA HARUS DIISI
             if (txtNIK.Text.Trim() == "" || txtNama.Text.Trim() == "")
             {
-                MessageBox.Show("NIK dan Nama wajib diisi!"); return;
+                MessageBox.Show("NIK dan Nama wajib diisi!", "Validasi Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
             using (SqlConnection conn = konn.GetConn())
             {
@@ -114,11 +107,13 @@ namespace TimAlat_Siperal
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = this.dgvPengguna.Rows[e.RowIndex];
-                txtNIK.Text = row.Cells["NIK"].Value.ToString();
-                txtNama.Text = row.Cells["Nama_Peminjam"].Value.ToString();
-                txtAlamat.Text = row.Cells["Alamat"].Value.ToString();
-                txtTelp.Text = row.Cells["NomorHP"].Value.ToString();
-                nikLama = row.Cells["NIK"].Value.ToString();
+
+                // VALIDASI CELL CLICK ANTI CRASH DBNULL
+                txtNIK.Text = row.Cells["NIK"].Value != DBNull.Value ? row.Cells["NIK"].Value.ToString() : "";
+                txtNama.Text = row.Cells["Nama_Peminjam"].Value != DBNull.Value ? row.Cells["Nama_Peminjam"].Value.ToString() : "";
+                txtAlamat.Text = row.Cells["Alamat"].Value != DBNull.Value ? row.Cells["Alamat"].Value.ToString() : "";
+                txtTelp.Text = row.Cells["NomorHP"].Value != DBNull.Value ? row.Cells["NomorHP"].Value.ToString() : "";
+                nikLama = txtNIK.Text;
             }
         }
 
