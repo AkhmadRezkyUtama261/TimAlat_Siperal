@@ -88,6 +88,7 @@ namespace TimAlat_Siperal
             btnLoginBaru.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             btnLoginBaru.Cursor = Cursors.Hand;
 
+            btnLoginBaru.Click += new EventHandler(btnLogin_Click);
             panel2.Controls.Add(btnLoginBaru);
         }
 
@@ -100,6 +101,15 @@ namespace TimAlat_Siperal
                 {
                     MessageBox.Show("Koneksi Database Gagal!\n\nError: " + ex.Message, "Kesalahan Fatal", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBox1.Text) || string.IsNullOrEmpty(textBox2.Text))
+            {
+                MessageBox.Show("Silakan isi Username dan Password terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
         }
     }
