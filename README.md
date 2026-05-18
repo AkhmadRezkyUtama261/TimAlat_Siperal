@@ -22,7 +22,7 @@ SQL
 SELECT * FROM vw_Alat WHERE Nama_Alat LIKE '%' OR 1=1 --%'
 4. Database menjalankan query dan memicu efek manipulasi Karakter -- akan mematikan sisa query di belakangnya menjadi comment. Karena kondisi logika matematika 1=1 selalu bernilai TRUE, database dipaksa meloloskan hak akses data.
 
-Sistem C# menangkap eksploitasi ini lalu menampilkan kotak pesan darurat: 🚨 WARNING: SYSTEM HACKED! 🚨. Setelah ditekan OK, DataGridView secara interaktif dimanipulasi untuk menampilkan baris data tiruan bertuliskan HACKED, SYSTEM HACKED, dan VULNERABLE di seluruh kolom tabel sebagai bukti visual bahwa pertahanan database telah ditembus.
+Sistem C# menangkap eksploitasi ini lalu menampilkan kotak pesan darurat: WARNING: SYSTEM HACKED!. Setelah ditekan OK, DataGridView secara interaktif dimanipulasi untuk menampilkan baris data tiruan bertuliskan HACKED, SYSTEM HACKED, dan VULNERABLE di seluruh kolom tabel sebagai bukti visual bahwa pertahanan database telah ditembus.
 
 Dampak SQL Injection
 SQL Injection dapat menyebabkan kebocoran data (Data Leakage) dan manipulasi tampilan antarmuka visual aplikasi, karena pengguna dapat merusak alur logika pencarian database tanpa batasan yang sesuai.
