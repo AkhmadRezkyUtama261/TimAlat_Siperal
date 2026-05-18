@@ -45,6 +45,9 @@ namespace TimAlat_Siperal
         private ToolStripSeparator bindingNavigatorSeparator2;
         private TextBox txtMerek;
         private Label label5;
+        private DBPeminjamanAlatDataSet dBPeminjamanAlatDataSet;
+        private BindingSource alatBindingSource;
+        private DBPeminjamanAlatDataSetTableAdapters.AlatTableAdapter alatTableAdapter;
         private ToolStripButton bindingNavigatorDeleteItem;
 
         public FormAlat()
@@ -379,17 +382,22 @@ namespace TimAlat_Siperal
             this.txtKodeAlat = new System.Windows.Forms.TextBox();
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
+            this.dBPeminjamanAlatDataSet = new TimAlat_Siperal.DBPeminjamanAlatDataSet();
+            this.alatBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.alatTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSetTableAdapters.AlatTableAdapter();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAlat)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.alatBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // dgvAlat
             // 
-            this.dgvAlat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.dgvAlat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvAlat.BackgroundColor = System.Drawing.Color.White;
             this.dgvAlat.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -445,6 +453,7 @@ namespace TimAlat_Siperal
             // 
             // txtNama
             // 
+            this.txtNama.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.alatBindingSource, "Nama_Alat", true));
             this.txtNama.Location = new System.Drawing.Point(100, 119);
             this.txtNama.Name = "txtNama";
             this.txtNama.Size = new System.Drawing.Size(210, 22);
@@ -466,6 +475,7 @@ namespace TimAlat_Siperal
             // 
             // txtStok
             // 
+            this.txtStok.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.alatBindingSource, "Stok", true));
             this.txtStok.Location = new System.Drawing.Point(100, 165);
             this.txtStok.Name = "txtStok";
             this.txtStok.Size = new System.Drawing.Size(210, 22);
@@ -522,6 +532,7 @@ namespace TimAlat_Siperal
             // 
             this.bindingNavigator1.AddNewItem = this.bindingNavigatorAddNewItem1;
             this.bindingNavigator1.CountItem = this.bindingNavigatorCountItem;
+            this.bindingNavigator1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.alatBindingSource, "alatID", true));
             this.bindingNavigator1.DeleteItem = this.bindingNavigatorDeleteItem1;
             this.bindingNavigator1.Dock = System.Windows.Forms.DockStyle.None;
             this.bindingNavigator1.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -682,6 +693,7 @@ namespace TimAlat_Siperal
             // 
             // txtMerek
             // 
+            this.txtMerek.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.alatBindingSource, "Merek", true));
             this.txtMerek.Location = new System.Drawing.Point(100, 81);
             this.txtMerek.Name = "txtMerek";
             this.txtMerek.Size = new System.Drawing.Size(210, 22);
@@ -707,6 +719,7 @@ namespace TimAlat_Siperal
             // 
             // txtKodeAlat
             // 
+            this.txtKodeAlat.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.alatBindingSource, "alatID", true));
             this.txtKodeAlat.Location = new System.Drawing.Point(100, 30);
             this.txtKodeAlat.Name = "txtKodeAlat";
             this.txtKodeAlat.Size = new System.Drawing.Size(210, 22);
@@ -722,11 +735,26 @@ namespace TimAlat_Siperal
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 23);
             // 
+            // dBPeminjamanAlatDataSet
+            // 
+            this.dBPeminjamanAlatDataSet.DataSetName = "DBPeminjamanAlatDataSet";
+            this.dBPeminjamanAlatDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // alatBindingSource
+            // 
+            this.alatBindingSource.DataMember = "Alat";
+            this.alatBindingSource.DataSource = this.dBPeminjamanAlatDataSet;
+            // 
+            // alatTableAdapter
+            // 
+            this.alatTableAdapter.ClearBeforeFill = true;
+            // 
             // FormAlat
             // 
             this.ClientSize = new System.Drawing.Size(1400, 700);
             this.Controls.Add(this.panel1);
             this.Name = "FormAlat";
+            this.Load += new System.EventHandler(this.FormAlat_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAlat)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -735,7 +763,16 @@ namespace TimAlat_Siperal
             this.bindingNavigator1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.alatBindingSource)).EndInit();
             this.ResumeLayout(false);
+
+        }
+
+        private void FormAlat_Load(object sender, EventArgs e)
+        {
+            // TODO: This line of code loads data into the 'dBPeminjamanAlatDataSet.Alat' table. You can move, or remove it, as needed.
+            this.alatTableAdapter.Fill(this.dBPeminjamanAlatDataSet.Alat);
 
         }
     }

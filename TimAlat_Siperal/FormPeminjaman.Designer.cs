@@ -36,6 +36,8 @@
             this.cbAlat = new System.Windows.Forms.ComboBox();
             this.dgvPeminjaman = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnSearchTrans = new System.Windows.Forms.Button();
+            this.txtSearchTrans = new System.Windows.Forms.TextBox();
             this.btnKembalikan = new System.Windows.Forms.Button();
             this.btnHapus = new System.Windows.Forms.Button();
             this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
@@ -50,19 +52,26 @@
             this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.txtSearchTrans = new System.Windows.Forms.TextBox();
-            this.btnSearchTrans = new System.Windows.Forms.Button();
+            this.dBPeminjamanAlatDataSet1 = new TimAlat_Siperal.DBPeminjamanAlatDataSet1();
+            this.peminjamanBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.peminjamanTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSet1TableAdapters.PeminjamanTableAdapter();
+            this.peminjamBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.peminjamTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSet1TableAdapters.PeminjamTableAdapter();
             this.groupBox1.SuspendLayout();
             this.panelTransaksi.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPeminjaman)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peminjamanBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peminjamBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Location = new System.Drawing.Point(20, 37);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 16);
@@ -72,6 +81,7 @@
             // lblNIKResult
             // 
             this.lblNIKResult.AutoSize = true;
+            this.lblNIKResult.BackColor = System.Drawing.Color.Transparent;
             this.lblNIKResult.Location = new System.Drawing.Point(20, 67);
             this.lblNIKResult.Name = "lblNIKResult";
             this.lblNIKResult.Size = new System.Drawing.Size(34, 16);
@@ -81,6 +91,7 @@
             // lblAlamat
             // 
             this.lblAlamat.AutoSize = true;
+            this.lblAlamat.BackColor = System.Drawing.Color.Transparent;
             this.lblAlamat.Location = new System.Drawing.Point(121, 104);
             this.lblAlamat.Name = "lblAlamat";
             this.lblAlamat.Size = new System.Drawing.Size(11, 16);
@@ -107,6 +118,7 @@
             // lblNamaPeminjam
             // 
             this.lblNamaPeminjam.AutoSize = true;
+            this.lblNamaPeminjam.BackColor = System.Drawing.Color.Transparent;
             this.lblNamaPeminjam.Location = new System.Drawing.Point(121, 67);
             this.lblNamaPeminjam.Name = "lblNamaPeminjam";
             this.lblNamaPeminjam.Size = new System.Drawing.Size(11, 16);
@@ -116,6 +128,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Location = new System.Drawing.Point(20, 104);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 16);
@@ -175,6 +188,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Location = new System.Drawing.Point(20, 120);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 16);
@@ -184,6 +198,7 @@
             // lblStok
             // 
             this.lblStok.AutoSize = true;
+            this.lblStok.BackColor = System.Drawing.Color.Transparent;
             this.lblStok.Location = new System.Drawing.Point(140, 85);
             this.lblStok.Name = "lblStok";
             this.lblStok.Size = new System.Drawing.Size(14, 16);
@@ -193,6 +208,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Location = new System.Drawing.Point(20, 85);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(98, 16);
@@ -236,6 +252,24 @@
             this.panel1.Size = new System.Drawing.Size(1843, 520);
             this.panel1.TabIndex = 3;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // btnSearchTrans
+            // 
+            this.btnSearchTrans.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.btnSearchTrans.Location = new System.Drawing.Point(1396, 0);
+            this.btnSearchTrans.Name = "btnSearchTrans";
+            this.btnSearchTrans.Size = new System.Drawing.Size(105, 25);
+            this.btnSearchTrans.TabIndex = 9;
+            this.btnSearchTrans.Text = "CARI DATA";
+            this.btnSearchTrans.UseVisualStyleBackColor = false;
+            this.btnSearchTrans.Click += new System.EventHandler(this.btnSearchTrans_Click);
+            // 
+            // txtSearchTrans
+            // 
+            this.txtSearchTrans.Location = new System.Drawing.Point(827, 1);
+            this.txtSearchTrans.Name = "txtSearchTrans";
+            this.txtSearchTrans.Size = new System.Drawing.Size(540, 22);
+            this.txtSearchTrans.TabIndex = 8;
             // 
             // btnKembalikan
             // 
@@ -381,23 +415,28 @@
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
             this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
-            // txtSearchTrans
+            // dBPeminjamanAlatDataSet1
             // 
-            this.txtSearchTrans.Location = new System.Drawing.Point(827, 1);
-            this.txtSearchTrans.Name = "txtSearchTrans";
-            this.txtSearchTrans.Size = new System.Drawing.Size(540, 22);
-            this.txtSearchTrans.TabIndex = 8;
+            this.dBPeminjamanAlatDataSet1.DataSetName = "DBPeminjamanAlatDataSet1";
+            this.dBPeminjamanAlatDataSet1.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
-            // btnSearchTrans
+            // peminjamanBindingSource
             // 
-            this.btnSearchTrans.BackColor = System.Drawing.Color.CornflowerBlue;
-            this.btnSearchTrans.Location = new System.Drawing.Point(1396, 0);
-            this.btnSearchTrans.Name = "btnSearchTrans";
-            this.btnSearchTrans.Size = new System.Drawing.Size(105, 25);
-            this.btnSearchTrans.TabIndex = 9;
-            this.btnSearchTrans.Text = "CARI DATA";
-            this.btnSearchTrans.UseVisualStyleBackColor = false;
-            this.btnSearchTrans.Click += new System.EventHandler(this.btnSearchTrans_Click);
+            this.peminjamanBindingSource.DataMember = "Peminjaman";
+            this.peminjamanBindingSource.DataSource = this.dBPeminjamanAlatDataSet1;
+            // 
+            // peminjamanTableAdapter
+            // 
+            this.peminjamanTableAdapter.ClearBeforeFill = true;
+            // 
+            // peminjamBindingSource
+            // 
+            this.peminjamBindingSource.DataMember = "Peminjam";
+            this.peminjamBindingSource.DataSource = this.dBPeminjamanAlatDataSet1;
+            // 
+            // peminjamTableAdapter
+            // 
+            this.peminjamTableAdapter.ClearBeforeFill = true;
             // 
             // FormPeminjaman
             // 
@@ -419,6 +458,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
             this.bindingNavigator1.ResumeLayout(false);
             this.bindingNavigator1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peminjamanBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peminjamBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -459,5 +501,10 @@
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.Button btnSearchTrans;
         private System.Windows.Forms.TextBox txtSearchTrans;
+        private DBPeminjamanAlatDataSet1 dBPeminjamanAlatDataSet1;
+        private System.Windows.Forms.BindingSource peminjamanBindingSource;
+        private DBPeminjamanAlatDataSet1TableAdapters.PeminjamanTableAdapter peminjamanTableAdapter;
+        private System.Windows.Forms.BindingSource peminjamBindingSource;
+        private DBPeminjamanAlatDataSet1TableAdapters.PeminjamTableAdapter peminjamTableAdapter;
     }
 }

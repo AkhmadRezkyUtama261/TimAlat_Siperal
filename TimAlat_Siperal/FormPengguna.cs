@@ -22,6 +22,8 @@ namespace TimAlat_Siperal
 
         private void FormPengguna_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'dBPeminjamanAlatDataSet1.Peminjam' table. You can move, or remove it, as needed.
+            this.peminjamTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjam);
             this.BackColor = Color.FromArgb(245, 246, 250);
             dgvPengguna.BackgroundColor = Color.White;
             dgvPengguna.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;

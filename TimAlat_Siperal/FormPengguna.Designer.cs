@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormPengguna));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -59,11 +59,16 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
+            this.dBPeminjamanAlatDataSet1 = new TimAlat_Siperal.DBPeminjamanAlatDataSet1();
+            this.peminjamBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.peminjamTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSet1TableAdapters.PeminjamTableAdapter();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPengguna)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peminjamBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -95,6 +100,7 @@
             // 
             // txtNIK
             // 
+            this.txtNIK.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.peminjamBindingSource, "NIK", true));
             this.txtNIK.Location = new System.Drawing.Point(142, 44);
             this.txtNIK.Name = "txtNIK";
             this.txtNIK.Size = new System.Drawing.Size(201, 22);
@@ -102,6 +108,7 @@
             // 
             // txtNama
             // 
+            this.txtNama.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.peminjamBindingSource, "Nama_Peminjam", true));
             this.txtNama.Location = new System.Drawing.Point(142, 86);
             this.txtNama.Name = "txtNama";
             this.txtNama.Size = new System.Drawing.Size(201, 22);
@@ -109,6 +116,7 @@
             // 
             // txtTelp
             // 
+            this.txtTelp.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.peminjamBindingSource, "NomorHP", true));
             this.txtTelp.Location = new System.Drawing.Point(142, 190);
             this.txtTelp.Name = "txtTelp";
             this.txtTelp.Size = new System.Drawing.Size(201, 22);
@@ -161,17 +169,17 @@
             this.dgvPengguna.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgvPengguna.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvPengguna.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(237)))), ((int)(((byte)(245)))));
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft YaHei UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvPengguna.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(237)))), ((int)(((byte)(245)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft YaHei UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvPengguna.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvPengguna.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPengguna.EnableHeadersVisualStyles = false;
-            this.dgvPengguna.Location = new System.Drawing.Point(798, 198);
+            this.dgvPengguna.Location = new System.Drawing.Point(798, 140);
             this.dgvPengguna.Name = "dgvPengguna";
             this.dgvPengguna.RowHeadersWidth = 51;
             this.dgvPengguna.RowTemplate.Height = 24;
@@ -190,6 +198,7 @@
             // 
             // txtAlamat
             // 
+            this.txtAlamat.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.peminjamBindingSource, "Alamat", true));
             this.txtAlamat.Location = new System.Drawing.Point(142, 134);
             this.txtAlamat.Name = "txtAlamat";
             this.txtAlamat.Size = new System.Drawing.Size(201, 22);
@@ -212,6 +221,7 @@
             // 
             this.bindingNavigator1.AddNewItem = this.bindingNavigatorAddNewItem;
             this.bindingNavigator1.CountItem = this.bindingNavigatorCountItem;
+            this.bindingNavigator1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.peminjamBindingSource, "PeminjamID", true));
             this.bindingNavigator1.DeleteItem = this.bindingNavigatorDeleteItem;
             this.bindingNavigator1.Dock = System.Windows.Forms.DockStyle.None;
             this.bindingNavigator1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
@@ -228,7 +238,7 @@
             this.bindingNavigatorSeparator2,
             this.bindingNavigatorAddNewItem,
             this.bindingNavigatorDeleteItem});
-            this.bindingNavigator1.Location = new System.Drawing.Point(798, 80);
+            this.bindingNavigator1.Location = new System.Drawing.Point(837, 75);
             this.bindingNavigator1.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.bindingNavigator1.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.bindingNavigator1.MoveNextItem = this.bindingNavigatorMoveNextItem;
@@ -364,6 +374,20 @@
             this.txtSearch.Size = new System.Drawing.Size(266, 22);
             this.txtSearch.TabIndex = 11;
             // 
+            // dBPeminjamanAlatDataSet1
+            // 
+            this.dBPeminjamanAlatDataSet1.DataSetName = "DBPeminjamanAlatDataSet1";
+            this.dBPeminjamanAlatDataSet1.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // peminjamBindingSource
+            // 
+            this.peminjamBindingSource.DataMember = "Peminjam";
+            this.peminjamBindingSource.DataSource = this.dBPeminjamanAlatDataSet1;
+            // 
+            // peminjamTableAdapter
+            // 
+            this.peminjamTableAdapter.ClearBeforeFill = true;
+            // 
             // FormPengguna
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -382,6 +406,8 @@
             this.bindingNavigator1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peminjamBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -416,5 +442,8 @@
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveNextItem;
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
+        private DBPeminjamanAlatDataSet1 dBPeminjamanAlatDataSet1;
+        private System.Windows.Forms.BindingSource peminjamBindingSource;
+        private DBPeminjamanAlatDataSet1TableAdapters.PeminjamTableAdapter peminjamTableAdapter;
     }
 }

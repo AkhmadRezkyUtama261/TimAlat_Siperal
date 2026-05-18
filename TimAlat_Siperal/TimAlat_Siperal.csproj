@@ -46,6 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBPeminjamanAlatDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBPeminjamanAlatDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DBPeminjamanAlatDataSet1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBPeminjamanAlatDataSet1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="FormAlat.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +117,28 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="DBPeminjamanAlatDataSet.xsc">
+      <DependentUpon>DBPeminjamanAlatDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DBPeminjamanAlatDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DBPeminjamanAlatDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DBPeminjamanAlatDataSet.xss">
+      <DependentUpon>DBPeminjamanAlatDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DBPeminjamanAlatDataSet1.xsc">
+      <DependentUpon>DBPeminjamanAlatDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="DBPeminjamanAlatDataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DBPeminjamanAlatDataSet1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DBPeminjamanAlatDataSet1.xss">
+      <DependentUpon>DBPeminjamanAlatDataSet1.xsd</DependentUpon>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
