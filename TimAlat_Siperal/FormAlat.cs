@@ -49,10 +49,25 @@ namespace TimAlat_Siperal
         private BindingSource alatBindingSource;
         private DBPeminjamanAlatDataSetTableAdapters.AlatTableAdapter alatTableAdapter;
         private ToolStripButton bindingNavigatorDeleteItem;
+        private Button btnImportExcel; // Tambahan Tombol Import Excel
 
         public FormAlat()
         {
             InitializeComponent();
+            
+            // Inisialisasi Tombol Import Excel
+            btnImportExcel = new Button();
+            btnImportExcel.Text = "Import Excel";
+            btnImportExcel.Size = new Size(120, 35);
+            btnImportExcel.Location = new Point(550, 480); // Diletakkan di bawah atau samping tombol lain
+            btnImportExcel.BackColor = Color.FromArgb(46, 204, 113); // Warna Hijau ala Excel
+            btnImportExcel.ForeColor = Color.White;
+            btnImportExcel.FlatStyle = FlatStyle.Flat;
+            btnImportExcel.FlatAppearance.BorderSize = 0;
+            btnImportExcel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnImportExcel.Cursor = Cursors.Hand;
+            this.Controls.Add(btnImportExcel);
+
             TampilData();
         }
 
@@ -354,6 +369,8 @@ namespace TimAlat_Siperal
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.txtNama = new System.Windows.Forms.TextBox();
+            this.alatBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.dBPeminjamanAlatDataSet = new TimAlat_Siperal.DBPeminjamanAlatDataSet();
             this.btnTampil = new System.Windows.Forms.Button();
             this.txtStok = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -382,16 +399,14 @@ namespace TimAlat_Siperal
             this.txtKodeAlat = new System.Windows.Forms.TextBox();
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
-            this.dBPeminjamanAlatDataSet = new TimAlat_Siperal.DBPeminjamanAlatDataSet();
-            this.alatBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.alatTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSetTableAdapters.AlatTableAdapter();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAlat)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.alatBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.alatBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // dgvAlat
@@ -458,6 +473,16 @@ namespace TimAlat_Siperal
             this.txtNama.Name = "txtNama";
             this.txtNama.Size = new System.Drawing.Size(210, 22);
             this.txtNama.TabIndex = 3;
+            // 
+            // alatBindingSource
+            // 
+            this.alatBindingSource.DataMember = "Alat";
+            this.alatBindingSource.DataSource = this.dBPeminjamanAlatDataSet;
+            // 
+            // dBPeminjamanAlatDataSet
+            // 
+            this.dBPeminjamanAlatDataSet.DataSetName = "DBPeminjamanAlatDataSet";
+            this.dBPeminjamanAlatDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // btnTampil
             // 
@@ -555,7 +580,7 @@ namespace TimAlat_Siperal
             this.bindingNavigator1.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.bindingNavigator1.Name = "bindingNavigator1";
             this.bindingNavigator1.PositionItem = this.bindingNavigatorPositionItem;
-            this.bindingNavigator1.Size = new System.Drawing.Size(302, 27);
+            this.bindingNavigator1.Size = new System.Drawing.Size(302, 31);
             this.bindingNavigator1.TabIndex = 14;
             this.bindingNavigator1.Text = "bindingNavigator1";
             // 
@@ -565,13 +590,13 @@ namespace TimAlat_Siperal
             this.bindingNavigatorAddNewItem1.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem1.Image")));
             this.bindingNavigatorAddNewItem1.Name = "bindingNavigatorAddNewItem1";
             this.bindingNavigatorAddNewItem1.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorAddNewItem1.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorAddNewItem1.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorAddNewItem1.Text = "Add new";
             // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(45, 24);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(45, 28);
             this.bindingNavigatorCountItem.Text = "of {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number of items";
             // 
@@ -581,7 +606,7 @@ namespace TimAlat_Siperal
             this.bindingNavigatorDeleteItem1.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem1.Image")));
             this.bindingNavigatorDeleteItem1.Name = "bindingNavigatorDeleteItem1";
             this.bindingNavigatorDeleteItem1.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem1.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorDeleteItem1.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorDeleteItem1.Text = "Delete";
             // 
             // bindingNavigatorMoveFirstItem
@@ -590,7 +615,7 @@ namespace TimAlat_Siperal
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveFirstItem.Text = "Move first";
             // 
             // bindingNavigatorMovePreviousItem
@@ -599,13 +624,13 @@ namespace TimAlat_Siperal
             this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMovePreviousItem.Text = "Move previous";
             // 
             // bindingNavigatorSeparator
             // 
             this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
-            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 31);
             // 
             // bindingNavigatorPositionItem
             // 
@@ -620,7 +645,7 @@ namespace TimAlat_Siperal
             // bindingNavigatorSeparator1
             // 
             this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
-            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // bindingNavigatorMoveNextItem
             // 
@@ -628,7 +653,7 @@ namespace TimAlat_Siperal
             this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveNextItem.Text = "Move next";
             // 
             // bindingNavigatorMoveLastItem
@@ -637,13 +662,13 @@ namespace TimAlat_Siperal
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveLastItem.Text = "Move last";
             // 
             // bindingNavigatorSeparator2
             // 
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
-            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 31);
             // 
             // btnSearch
             // 
@@ -735,16 +760,6 @@ namespace TimAlat_Siperal
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 23);
             // 
-            // dBPeminjamanAlatDataSet
-            // 
-            this.dBPeminjamanAlatDataSet.DataSetName = "DBPeminjamanAlatDataSet";
-            this.dBPeminjamanAlatDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // alatBindingSource
-            // 
-            this.alatBindingSource.DataMember = "Alat";
-            this.alatBindingSource.DataSource = this.dBPeminjamanAlatDataSet;
-            // 
             // alatTableAdapter
             // 
             this.alatTableAdapter.ClearBeforeFill = true;
@@ -756,6 +771,8 @@ namespace TimAlat_Siperal
             this.Name = "FormAlat";
             this.Load += new System.EventHandler(this.FormAlat_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAlat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.alatBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
@@ -763,8 +780,6 @@ namespace TimAlat_Siperal
             this.bindingNavigator1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.alatBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
