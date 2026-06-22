@@ -37,8 +37,9 @@ namespace TimAlat_Siperal
             
             // Tambahkan ke panel2 (kotak putih tempat input) biar pasti muncul dan rapi
             if (this.panel2 != null) {
-                // btnHapus posisinya di (3, 320). Kita taruh di (3, 380) biar ada jarak.
-                btnImportExcel.Location = new Point(3, 380);
+                // Taruh di sebelah kiri (X=3) sejajar dengan tombol Update (Y=269)
+                // karena di bawah Delete sepertinya terpotong batas layar (clipping)
+                btnImportExcel.Location = new Point(3, 269);
                 this.panel2.Controls.Add(btnImportExcel);
                 btnImportExcel.BringToFront();
             } else {
