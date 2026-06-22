@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
+using ExcelDataReader;
 
 namespace TimAlat_Siperal
 {
@@ -11,12 +13,38 @@ namespace TimAlat_Siperal
         Koneksi konn = new Koneksi();
         BindingSource bs = new BindingSource();
         int idPeminjam = 0;
+        
+        Button btnImportExcel;
 
         public string StatusAkses { get; set; } = "ADMIN";
 
         public FormPengguna()
         {
             InitializeComponent();
+            
+            // Inisialisasi Tombol Import Excel
+            btnImportExcel = new Button();
+            btnImportExcel.Text = "Import Excel";
+            btnImportExcel.Size = new Size(140, 30);
+            btnImportExcel.Location = new Point(416, 210); // Menempatkan di atas datagridview atau dekat form pencarian
+            btnImportExcel.BackColor = Color.FromArgb(46, 204, 113); // Warna Hijau ala Excel
+            btnImportExcel.ForeColor = Color.White;
+            btnImportExcel.FlatStyle = FlatStyle.Flat;
+            btnImportExcel.FlatAppearance.BorderSize = 0;
+            btnImportExcel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnImportExcel.Cursor = Cursors.Hand;
+            btnImportExcel.Click += new EventHandler(btnImportExcel_Click); // Event click import
+            
+            // Tambahkan ke form atau panel2 agar tidak tertutup
+            if (this.panel2 != null) {
+                // btnHapus di (3, 320), kita taruh di (3, 370) biar berderet vertikal di panel kiri
+                btnImportExcel.Location = new Point(3, 370);
+                this.panel2.Controls.Add(btnImportExcel);
+            } else {
+                this.Controls.Add(btnImportExcel);
+                btnImportExcel.BringToFront();
+            }
+
             TampilData();
         }
 
@@ -227,6 +255,74 @@ namespace TimAlat_Siperal
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error Pencarian: " + ex.Message);
+                }
+            }
+        }
+
+        private void btnImportExcel_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+            openFileDialog.Title = "Pilih File Excel Data Pengguna";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    using (var stream = File.Open(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var reader = ExcelReaderFactory.CreateReader(stream))
+                        {
+                            var result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                            {
+                                ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                                {
+                                    UseHeaderRow = true
+                                }
+                            });
+
+                            DataTable dtExcel = result.Tables[0];
+                            int suksesCount = 0;
+                            int gagalCount = 0;
+
+                            foreach (DataRow row in dtExcel.Rows)
+                            {
+                                string nik = row[0].ToString();
+                                string nama = row[1].ToString();
+                                string alamat = row[2].ToString();
+                                string nohp = row[3].ToString();
+
+                                if (string.IsNullOrWhiteSpace(nik) || string.IsNullOrWhiteSpace(nama)) continue;
+
+                                using (SqlConnection conn = konn.GetConn())
+                                {
+                                    try
+                                    {
+                                        conn.Open();
+                                        SqlCommand cmd = new SqlCommand("sp_TambahPeminjam", conn);
+                                        cmd.CommandType = CommandType.StoredProcedure;
+                                        cmd.Parameters.AddWithValue("@NIK", nik);
+                                        cmd.Parameters.AddWithValue("@NAMA", nama);
+                                        cmd.Parameters.AddWithValue("@alamat", alamat);
+                                        cmd.Parameters.AddWithValue("@NoHp", nohp);
+                                        cmd.ExecuteNonQuery();
+                                        suksesCount++;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        gagalCount++;
+                                    }
+                                }
+                            }
+                            
+                            MessageBox.Show($"Import Selesai!\nBerhasil: {suksesCount}\nGagal/Duplikat: {gagalCount}", "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            TampilData();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Terjadi kesalahan saat membaca file Excel. Pastikan file tidak sedang dibuka di aplikasi lain.\n\nDetail: " + ex.Message, "Error Membaca Excel", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
