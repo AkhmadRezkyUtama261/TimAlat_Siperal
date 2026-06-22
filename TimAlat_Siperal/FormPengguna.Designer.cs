@@ -369,9 +369,10 @@ namespace TimAlat_Siperal
             this.btnSearch.BackColor = System.Drawing.Color.CornflowerBlue;
             this.btnSearch.FlatAppearance.BorderSize = 0;
             this.btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSearch.Location = new System.Drawing.Point(1484, 139);
+            this.btnSearch.Location = new System.Drawing.Point(1550, 75);
+            this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(148, 23);
+            this.btnSearch.Size = new System.Drawing.Size(148, 27);
             this.btnSearch.TabIndex = 12;
             this.btnSearch.Text = "CARI DATA";
             this.btnSearch.UseVisualStyleBackColor = false;
@@ -379,7 +380,8 @@ namespace TimAlat_Siperal
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(1194, 140);
+            this.txtSearch.Location = new System.Drawing.Point(1270, 75);
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(266, 22);
             this.txtSearch.TabIndex = 11;
