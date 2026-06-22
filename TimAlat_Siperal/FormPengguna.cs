@@ -22,6 +22,28 @@ namespace TimAlat_Siperal
         {
             InitializeComponent();
             
+            // Inisialisasi Tombol Import Excel secara kode agar otomatis muncul
+            Button btnImportExcel = new Button();
+            btnImportExcel.Name = "btnImportExcel";
+            btnImportExcel.Text = "Import Excel";
+            btnImportExcel.Size = new Size(140, 36);
+            btnImportExcel.Location = new Point(3, 269); // Posisi pas di samping tombol Update
+            btnImportExcel.BackColor = Color.FromArgb(46, 204, 113); // Hijau Excel
+            btnImportExcel.ForeColor = Color.White;
+            btnImportExcel.FlatStyle = FlatStyle.Flat;
+            btnImportExcel.FlatAppearance.BorderSize = 0;
+            btnImportExcel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            btnImportExcel.Cursor = Cursors.Hand;
+            btnImportExcel.Click += new EventHandler(btnImportExcel_Click);
+            
+            if (this.panel2 != null) {
+                this.panel2.Controls.Add(btnImportExcel);
+                btnImportExcel.BringToFront();
+            } else {
+                this.Controls.Add(btnImportExcel);
+                btnImportExcel.BringToFront();
+            }
+
             TampilData();
         }
 
