@@ -276,15 +276,19 @@ namespace TimAlat_Siperal
                     idTerpilih = row.Cells[0].Value.ToString();
                     try
                     {
-                        if (dgvPeminjaman.Columns.Contains("Nama_Peminjam") && row.Cells["Nama_Peminjam"].Value != null)
+                        int colNama = dgvPeminjaman.Columns.Contains("Nama Peminjam") ? dgvPeminjaman.Columns["Nama Peminjam"].Index : 
+                                      (dgvPeminjaman.Columns.Contains("Nama_Peminjam") ? dgvPeminjaman.Columns["Nama_Peminjam"].Index : 1);
+                        if (row.Cells[colNama].Value != null)
                         {
-                            int idx = txtCariNama.FindStringExact(row.Cells["Nama_Peminjam"].Value.ToString());
+                            int idx = txtCariNama.FindStringExact(row.Cells[colNama].Value.ToString());
                             if (idx >= 0) txtCariNama.SelectedIndex = idx;
                         }
                         
-                        if (dgvPeminjaman.Columns.Contains("Nama_Alat") && row.Cells["Nama_Alat"].Value != null)
+                        int colAlat = dgvPeminjaman.Columns.Contains("Nama Alat") ? dgvPeminjaman.Columns["Nama Alat"].Index : 
+                                      (dgvPeminjaman.Columns.Contains("Nama_Alat") ? dgvPeminjaman.Columns["Nama_Alat"].Index : 2);
+                        if (row.Cells[colAlat].Value != null)
                         {
-                            string namaAlat = row.Cells["Nama_Alat"].Value.ToString();
+                            string namaAlat = row.Cells[colAlat].Value.ToString();
                             for (int i = 0; i < cbAlat.Items.Count; i++)
                             {
                                 if (cbAlat.Items[i].ToString().Contains(namaAlat))
@@ -295,9 +299,11 @@ namespace TimAlat_Siperal
                             }
                         }
                         
-                        if (dgvPeminjaman.Columns.Contains("Jumlah_Pinjam") && row.Cells["Jumlah_Pinjam"].Value != null)
+                        int colJumlah = dgvPeminjaman.Columns.Contains("Jumlah Pinjam") ? dgvPeminjaman.Columns["Jumlah Pinjam"].Index : 
+                                        (dgvPeminjaman.Columns.Contains("Jumlah_Pinjam") ? dgvPeminjaman.Columns["Jumlah_Pinjam"].Index : 4);
+                        if (row.Cells[colJumlah].Value != null && txtJumlah != null)
                         {
-                            if (txtJumlah != null) txtJumlah.Text = row.Cells["Jumlah_Pinjam"].Value.ToString();
+                            txtJumlah.Text = row.Cells[colJumlah].Value.ToString();
                         }
                     }
                     catch { }
