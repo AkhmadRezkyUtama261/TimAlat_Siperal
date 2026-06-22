@@ -274,6 +274,33 @@ namespace TimAlat_Siperal
                 if (row.Cells[0].Value != null && row.Cells[0].Value != DBNull.Value)
                 {
                     idTerpilih = row.Cells[0].Value.ToString();
+                    try
+                    {
+                        if (dgvPeminjaman.Columns.Contains("Nama_Peminjam") && row.Cells["Nama_Peminjam"].Value != null)
+                        {
+                            int idx = txtCariNama.FindStringExact(row.Cells["Nama_Peminjam"].Value.ToString());
+                            if (idx >= 0) txtCariNama.SelectedIndex = idx;
+                        }
+                        
+                        if (dgvPeminjaman.Columns.Contains("Nama_Alat") && row.Cells["Nama_Alat"].Value != null)
+                        {
+                            string namaAlat = row.Cells["Nama_Alat"].Value.ToString();
+                            for (int i = 0; i < cbAlat.Items.Count; i++)
+                            {
+                                if (cbAlat.Items[i].ToString().Contains(namaAlat))
+                                {
+                                    cbAlat.SelectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (dgvPeminjaman.Columns.Contains("Jumlah_Pinjam") && row.Cells["Jumlah_Pinjam"].Value != null)
+                        {
+                            if (txtJumlah != null) txtJumlah.Text = row.Cells["Jumlah_Pinjam"].Value.ToString();
+                        }
+                    }
+                    catch { }
                 }
             }
         }

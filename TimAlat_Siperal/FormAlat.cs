@@ -282,6 +282,10 @@ namespace TimAlat_Siperal
                 if (row.Cells["alatID"].Value != null && row.Cells["alatID"].Value != DBNull.Value)
                 {
                     idAlat = row.Cells["alatID"].Value.ToString();
+                    txtKodeAlat.Text = idAlat;
+                    txtNama.Text = row.Cells["Nama_Alat"].Value != DBNull.Value ? row.Cells["Nama_Alat"].Value.ToString() : "";
+                    txtStok.Text = row.Cells["Stok"].Value != DBNull.Value ? row.Cells["Stok"].Value.ToString() : "";
+                    txtMerek.Text = row.Cells["Merek"].Value != DBNull.Value ? row.Cells["Merek"].Value.ToString() : "";
                     txtKodeAlat.Enabled = false;
                 }
                 else
