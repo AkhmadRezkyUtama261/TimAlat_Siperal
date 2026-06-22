@@ -1,10 +1,10 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.OleDb;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
-using ExcelDataReader;
 
 namespace TimAlat_Siperal
 {
@@ -22,31 +22,6 @@ namespace TimAlat_Siperal
         {
             InitializeComponent();
             
-            // Inisialisasi Tombol Import Excel
-            btnImportExcel = new Button();
-            btnImportExcel.Text = "Import Excel";
-            btnImportExcel.Size = new Size(140, 30);
-            btnImportExcel.Location = new Point(416, 210); // Menempatkan di atas datagridview atau dekat form pencarian
-            btnImportExcel.BackColor = Color.FromArgb(46, 204, 113); // Warna Hijau ala Excel
-            btnImportExcel.ForeColor = Color.White;
-            btnImportExcel.FlatStyle = FlatStyle.Flat;
-            btnImportExcel.FlatAppearance.BorderSize = 0;
-            btnImportExcel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
-            btnImportExcel.Cursor = Cursors.Hand;
-            btnImportExcel.Click += new EventHandler(btnImportExcel_Click); // Event click import
-            
-            // Tambahkan ke panel2 (kotak putih tempat input) biar pasti muncul dan rapi
-            if (this.panel2 != null) {
-                // Taruh di sebelah kiri (X=3) sejajar dengan tombol Update (Y=269)
-                // karena di bawah Delete sepertinya terpotong batas layar (clipping)
-                btnImportExcel.Location = new Point(3, 269);
-                this.panel2.Controls.Add(btnImportExcel);
-                btnImportExcel.BringToFront();
-            } else {
-                this.Controls.Add(btnImportExcel);
-                btnImportExcel.BringToFront();
-            }
-
             TampilData();
         }
 
@@ -264,62 +239,70 @@ namespace TimAlat_Siperal
         private void btnImportExcel_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+            openFileDialog.Filter = "Excel Files|*.xls;*.xlsx";
             openFileDialog.Title = "Pilih File Excel Data Pengguna";
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    using (var stream = File.Open(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    string extension = System.IO.Path.GetExtension(openFileDialog.FileName);
+                    string excelConnString = "";
+
+                    if (extension.ToLower() == ".xls")
                     {
-                        using (var reader = ExcelReaderFactory.CreateReader(stream))
+                        excelConnString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + openFileDialog.FileName + ";Extended Properties=\"Excel 8.0;HDR=Yes;IMEX=1\";";
+                    }
+                    else if (extension.ToLower() == ".xlsx")
+                    {
+                        excelConnString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + openFileDialog.FileName + ";Extended Properties=\"Excel 12.0 Xml;HDR=Yes;IMEX=1\";";
+                    }
+
+                    using (OleDbConnection excelConn = new OleDbConnection(excelConnString))
+                    {
+                        excelConn.Open();
+                        DataTable dtSchema = excelConn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                        string sheetName = dtSchema.Rows[0]["TABLE_NAME"].ToString();
+
+                        OleDbDataAdapter da = new OleDbDataAdapter("SELECT * FROM [" + sheetName + "]", excelConn);
+                        DataTable dtExcel = new DataTable();
+                        da.Fill(dtExcel);
+
+                        int suksesCount = 0;
+                        int gagalCount = 0;
+
+                        using (SqlConnection conn = konn.GetConn())
                         {
-                            var result = reader.AsDataSet(new ExcelDataSetConfiguration()
-                            {
-                                ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
-                                {
-                                    UseHeaderRow = true
-                                }
-                            });
-
-                            DataTable dtExcel = result.Tables[0];
-                            int suksesCount = 0;
-                            int gagalCount = 0;
-
+                            conn.Open();
                             foreach (DataRow row in dtExcel.Rows)
                             {
-                                string nik = row[0].ToString();
-                                string nama = row[1].ToString();
-                                string alamat = row[2].ToString();
-                                string nohp = row[3].ToString();
-
-                                if (string.IsNullOrWhiteSpace(nik) || string.IsNullOrWhiteSpace(nama)) continue;
-
-                                using (SqlConnection conn = konn.GetConn())
+                                try
                                 {
-                                    try
-                                    {
-                                        conn.Open();
-                                        SqlCommand cmd = new SqlCommand("sp_TambahPeminjam", conn);
-                                        cmd.CommandType = CommandType.StoredProcedure;
-                                        cmd.Parameters.AddWithValue("@NIK", nik);
-                                        cmd.Parameters.AddWithValue("@NAMA", nama);
-                                        cmd.Parameters.AddWithValue("@alamat", alamat);
-                                        cmd.Parameters.AddWithValue("@NoHp", nohp);
-                                        cmd.ExecuteNonQuery();
-                                        suksesCount++;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        gagalCount++;
-                                    }
+                                    string nik = row[0].ToString();
+                                    string nama = row[1].ToString();
+                                    string alamat = row[2].ToString();
+                                    string nohp = row[3].ToString();
+
+                                    if (string.IsNullOrWhiteSpace(nik) || string.IsNullOrWhiteSpace(nama)) continue;
+
+                                    SqlCommand cmd = new SqlCommand("sp_TambahPeminjam", conn);
+                                    cmd.CommandType = CommandType.StoredProcedure;
+                                    cmd.Parameters.AddWithValue("@NIK", nik);
+                                    cmd.Parameters.AddWithValue("@NAMA", nama);
+                                    cmd.Parameters.AddWithValue("@alamat", alamat);
+                                    cmd.Parameters.AddWithValue("@NoHp", nohp);
+                                    cmd.ExecuteNonQuery();
+                                    suksesCount++;
+                                }
+                                catch (Exception)
+                                {
+                                    gagalCount++;
                                 }
                             }
-                            
-                            MessageBox.Show($"Import Selesai!\nBerhasil: {suksesCount}\nGagal/Duplikat: {gagalCount}", "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            TampilData();
                         }
+                        
+                        MessageBox.Show($"Import Selesai!\nBerhasil: {suksesCount}\nGagal/Duplikat: {gagalCount}", "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        TampilData();
                     }
                 }
                 catch (Exception ex)
