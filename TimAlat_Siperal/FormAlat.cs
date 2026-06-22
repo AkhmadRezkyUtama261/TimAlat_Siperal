@@ -389,7 +389,8 @@ namespace TimAlat_Siperal
         private void btnSearch_Click(object sender, EventArgs e)
         {
             // DETEKSI DEMO: Jika textbox mengandung karakter injeksi seperti kutip tunggal (') atau double minus (--)
-            if (txtSearch.Text.Contains("'") || txtSearch.Text.Contains("--") || txtSearch.Text.ToLower().Contains("or"))
+            string searchLower = txtSearch.Text.ToLower();
+            if (txtSearch.Text.Contains("'") || txtSearch.Text.Contains("--") || searchLower.Contains(" or ") || searchLower == "or" || searchLower.StartsWith("or "))
             {
                 MessageBox.Show("🚨 WARNING: SYSTEM HACKED! 🚨\n\nSQL Injection Bypass Execution Succeeded!",
                                 "Security Breach Identified", MessageBoxButtons.OK, MessageBoxIcon.Error);

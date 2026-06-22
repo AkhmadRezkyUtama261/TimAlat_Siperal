@@ -620,3 +620,35 @@ select * into Peminjaman_Backup From Peminjaman;
 
 	
 
+
+
+-- 1. Bikin tabel buat nyimpen log aktivitas otomatis
+CREATE TABLE LogAktivitasAlat (
+    LogID INT IDENTITY(1,1) PRIMARY KEY,
+    Aksi VARCHAR(50),
+    NamaAlat VARCHAR(100),
+    Waktu DATETIME DEFAULT GETDATE()
+);
+GO
+
+-- 2. Bikin TRIGGER-nya (Syarat UCP 3 terpenuhi!)
+CREATE TRIGGER trg_AfterInsertAlat
+ON Alat
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO LogAktivitasAlat (Aksi, NamaAlat)
+    SELECT 'Tambah Alat Baru', Nama_Alat FROM inserted;
+END;
+GO
+
+-- 3. Bikin Stored Procedure untuk cari data Alat (Syarat UCP 3 terpenuhi!)
+CREATE PROCEDURE sp_CariAlat
+    @KataKunci VARCHAR(100)
+AS
+BEGIN
+    SELECT * FROM Alat 
+    WHERE Nama_Alat LIKE '%' + @KataKunci + '%' OR Merek LIKE '%' + @KataKunci + '%';
+END;
+GO
+
