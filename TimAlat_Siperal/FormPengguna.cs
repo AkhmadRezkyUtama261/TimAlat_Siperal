@@ -35,11 +35,11 @@ namespace TimAlat_Siperal
             btnImportExcel.Cursor = Cursors.Hand;
             btnImportExcel.Click += new EventHandler(btnImportExcel_Click); // Event click import
             
-            // Tambahkan ke panel1 (container utama) biar pasti muncul
-            if (this.panel1 != null) {
-                // Posisi di bawah DataGridView yang ada di X=798, Y=140 dengan Height=300
-                btnImportExcel.Location = new Point(798, 450);
-                this.panel1.Controls.Add(btnImportExcel);
+            // Tambahkan ke panel2 (kotak putih tempat input) biar pasti muncul dan rapi
+            if (this.panel2 != null) {
+                // btnHapus posisinya di (3, 320). Kita taruh di (3, 380) biar ada jarak.
+                btnImportExcel.Location = new Point(3, 380);
+                this.panel2.Controls.Add(btnImportExcel);
                 btnImportExcel.BringToFront();
             } else {
                 this.Controls.Add(btnImportExcel);
