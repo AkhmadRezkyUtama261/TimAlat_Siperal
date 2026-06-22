@@ -2,6 +2,8 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
   </Folder>
-  <Project Path="../SetupSiperal_1/SetupSiperal_1.vdproj" Type="Installer" />
+  <Project Path="../SetupSiperal_1/SetupSiperal_1.vdproj" Type="Installer">
+    <Build />
+  </Project>
   <Project Path="TimAlat_Siperal.csproj" Id="274306c0-9359-428f-a699-938ef01c2c18" />
 </Solution>
