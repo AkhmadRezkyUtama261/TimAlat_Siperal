@@ -108,13 +108,48 @@ namespace TimAlat_Siperal
                     DataTable dtExcel = new DataTable();
                     da.Fill(dtExcel);
 
-                    MessageBox.Show("Berhasil membaca " + dtExcel.Rows.Count + " baris data dari Excel!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    // Nanti datanya bakal kita simpan ke database di commit selanjutnya
+                    MessageBox.Show("Berhasil membaca " + dtExcel.Rows.Count + " baris data dari Excel!\nMenyimpan ke database...", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+                    int berhasil = 0;
+                    int gagal = 0;
+
+                    using (SqlConnection conn = konn.GetConn())
+                    {
+                        conn.Open();
+                        foreach (DataRow row in dtExcel.Rows)
+                        {
+                            try
+                            {
+                                // Pastikan urutan kolom Excel: AlatID | Nama_Alat | Stok | Merek
+                                string id = row[0].ToString();
+                                string nama = row[1].ToString();
+                                int stok = Convert.ToInt32(row[2]);
+                                string merek = row[3].ToString();
+
+                                SqlCommand cmd = new SqlCommand("sp_TambahAlat", conn);
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@AlatID", id);
+                                cmd.Parameters.AddWithValue("@Nama", nama);
+                                cmd.Parameters.AddWithValue("@stok", stok);
+                                cmd.Parameters.AddWithValue("@Merek", merek);
+                                cmd.ExecuteNonQuery();
+
+                                berhasil++;
+                            }
+                            catch (Exception)
+                            {
+                                gagal++;
+                            }
+                        }
+                    }
+
+                    MessageBox.Show("Import Selesai!\nBerhasil: " + berhasil + "\nGagal/Duplikat: " + gagal, "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    TampilData(); // Refresh Datagrid
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Gagal membaca Excel: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Gagal membaca Excel: Pastikan file tidak sedang dibuka dan format kolomnya benar (AlatID, Nama_Alat, Stok, Merek).\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
