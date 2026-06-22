@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.OleDb; // Tambahan untuk Import Excel
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -82,8 +83,38 @@ namespace TimAlat_Siperal
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 string filePath = ofd.FileName;
-                MessageBox.Show("File berhasil dipilih:\n" + filePath + "\n\n(Tahap selanjutnya: Membaca isi Excelnya!)", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // Logika OleDb akan dilanjutkan di commit berikutnya
+                BacaDataExcel(filePath);
+            }
+        }
+
+        // ================= POIN 3: IMPORT EXCEL (Tahap 2) =================
+        private void BacaDataExcel(string filePath)
+        {
+            try
+            {
+                string excelConnString = "";
+                if (filePath.EndsWith(".xls"))
+                    excelConnString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + filePath + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1;\"";
+                else if (filePath.EndsWith(".xlsx"))
+                    excelConnString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filePath + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1;\"";
+
+                using (OleDbConnection excelConn = new OleDbConnection(excelConnString))
+                {
+                    excelConn.Open();
+                    DataTable dtSchema = excelConn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                    string sheetName = dtSchema.Rows[0]["TABLE_NAME"].ToString();
+
+                    OleDbDataAdapter da = new OleDbDataAdapter("SELECT * FROM [" + sheetName + "]", excelConn);
+                    DataTable dtExcel = new DataTable();
+                    da.Fill(dtExcel);
+
+                    MessageBox.Show("Berhasil membaca " + dtExcel.Rows.Count + " baris data dari Excel!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Nanti datanya bakal kita simpan ke database di commit selanjutnya
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal membaca Excel: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
