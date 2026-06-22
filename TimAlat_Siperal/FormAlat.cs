@@ -50,7 +50,6 @@ namespace TimAlat_Siperal
         private BindingSource alatBindingSource;
         private DBPeminjamanAlatDataSetTableAdapters.AlatTableAdapter alatTableAdapter;
         private ToolStripButton bindingNavigatorDeleteItem;
-        private Button button1;
         private Button btnImportExcel; // Tambahan Tombol Import Excel
 
         public FormAlat()
@@ -512,7 +511,6 @@ namespace TimAlat_Siperal
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.alatTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSetTableAdapters.AlatTableAdapter();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAlat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.alatBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet)).BeginInit();
@@ -650,7 +648,6 @@ namespace TimAlat_Siperal
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.bindingNavigator1);
             this.panel1.Controls.Add(this.dgvAlat);
             this.panel1.Controls.Add(this.btnSearch);
@@ -877,15 +874,6 @@ namespace TimAlat_Siperal
             // alatTableAdapter
             // 
             this.alatTableAdapter.ClearBeforeFill = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(308, 564);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(77, 21);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
             // 
             // FormAlat
             // 

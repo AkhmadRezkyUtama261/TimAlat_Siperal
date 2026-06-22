@@ -16,7 +16,7 @@ namespace TimAlat_Siperal
         
         Button btnImportExcel;
 
-        public string StatusAkses { get; set; } = "ADMIN";
+        public string StatusAkses { get; set; }
 
         public FormPengguna()
         {
@@ -323,7 +323,7 @@ namespace TimAlat_Siperal
                             }
                         }
                         
-                        MessageBox.Show($"Import Selesai!\nBerhasil: {suksesCount}\nGagal/Duplikat: {gagalCount}", "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format("Import Selesai!\nBerhasil: {0}\nGagal/Duplikat: {1}", suksesCount, gagalCount), "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         TampilData();
                     }
                 }

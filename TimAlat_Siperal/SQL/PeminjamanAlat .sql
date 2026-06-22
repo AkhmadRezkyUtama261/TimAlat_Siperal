@@ -445,9 +445,9 @@ Create Proc sp_HapusPeminjam
 	@PeminjamID INT
 as
 Begin
-	IF Exists (Select 1 from Peminjaman Where PeminjamanID = @PeminjamID and Status = 'DIPINJAM')
+	IF Exists (Select 1 from Peminjaman Where PeminjamID = @PeminjamID and Status = 'DIPINJAM')
 	Begin 
-		Throw 51000, 'Hayoo nyak masi minjem ',1;
+		Throw 51000, 'Gagal! Warga ini masih meminjam alat dan belum dikembalikan.', 1;
 	End
 	Begin try
 

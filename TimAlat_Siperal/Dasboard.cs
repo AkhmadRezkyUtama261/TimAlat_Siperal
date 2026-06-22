@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -74,6 +74,15 @@ namespace TimAlat_Siperal
             RapikanTombolUMY(btnKeDataAlat, 260);
             RapikanTombolUMY(btnTransaksi, 325);
 
+            if (button1 != null)
+            {
+                RapikanTombolUMY(button1, 390); // Default ADMIN
+                button1.Text = "Cetak Laporan";
+                button1.Size = new Size(210, 50); // Paksa ukuran
+                button1.Anchor = AnchorStyles.Top | AnchorStyles.Left; // Reset anchor
+                button1.BringToFront();
+            }
+
             if (btnLogout != null)
             {
                 RapikanTombolLogoutHCI(btnLogout, panelSidebar.Height - 80);
@@ -85,6 +94,7 @@ namespace TimAlat_Siperal
                 if (btnDataPengguna != null) btnDataPengguna.Visible = true;
                 if (btnKeDataAlat != null) btnKeDataAlat.Visible = false;
                 if (btnTransaksi != null) btnTransaksi.Location = new Point(20, 260);
+                if (button1 != null) button1.Location = new Point(20, 325); // Naik di PETUGAS
             }
 
             TarikDataDariDatabase();
@@ -102,8 +112,32 @@ namespace TimAlat_Siperal
             card3.Location = new Point(posisiX3, 120);
 
             dgvActivity.Location = new Point(posisiX1, 280);
-            dgvActivity.Width = (lebarKartu * 3) + (jarakAntarKartu * 2);
-            dgvActivity.Height = 450;
+            dgvActivity.Width = (lebarKartu * 2) + jarakAntarKartu;
+            dgvActivity.Height = 250; // Diperpendek agar muat untuk chart di bawahnya
+
+            Control[] foundCharts1 = this.Controls.Find("chart1", true);
+            if (foundCharts1.Length > 0 && foundCharts1[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart1)
+            {
+                chart1.Location = new Point(posisiX3, 280);
+                chart1.Size = new Size(lebarKartu + 40, 250);
+                chart1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            }
+
+            Control[] foundCharts2 = this.Controls.Find("chart2", true);
+            if (foundCharts2.Length > 0 && foundCharts2[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart2)
+            {
+                chart2.Location = new Point(posisiX1, 550);
+                chart2.Size = new Size((lebarKartu * 2) + jarakAntarKartu, 250);
+                chart2.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            }
+
+            Control[] foundCharts3 = this.Controls.Find("chart3", true);
+            if (foundCharts3.Length > 0 && foundCharts3[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart3)
+            {
+                chart3.Location = new Point(posisiX3, 550);
+                chart3.Size = new Size(lebarKartu + 40, 250);
+                chart3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            }
         }
 
         private void BukaHalaman(Form formBawahan)
@@ -115,6 +149,14 @@ namespace TimAlat_Siperal
             card2.Visible = false;
             card3.Visible = false;
             dgvActivity.Visible = false;
+            Control[] foundCharts1 = this.Controls.Find("chart1", true);
+            if (foundCharts1.Length > 0) foundCharts1[0].Visible = false;
+
+            Control[] foundCharts2 = this.Controls.Find("chart2", true);
+            if (foundCharts2.Length > 0) foundCharts2[0].Visible = false;
+
+            Control[] foundCharts3 = this.Controls.Find("chart3", true);
+            if (foundCharts3.Length > 0) foundCharts3[0].Visible = false;
 
             formBawahan.TopLevel = false;
             formBawahan.FormBorderStyle = FormBorderStyle.None;
@@ -133,6 +175,14 @@ namespace TimAlat_Siperal
         {
             if (formAktif != null) { formAktif.Close(); formAktif = null; }
             card1.Visible = true; card2.Visible = true; card3.Visible = true; dgvActivity.Visible = true;
+            Control[] foundCharts1 = this.Controls.Find("chart1", true);
+            if (foundCharts1.Length > 0) foundCharts1[0].Visible = true;
+
+            Control[] foundCharts2 = this.Controls.Find("chart2", true);
+            if (foundCharts2.Length > 0) foundCharts2[0].Visible = true;
+
+            Control[] foundCharts3 = this.Controls.Find("chart3", true);
+            if (foundCharts3.Length > 0) foundCharts3[0].Visible = true;
             TarikDataDariDatabase();
         }
 
@@ -146,6 +196,12 @@ namespace TimAlat_Siperal
         private void btnTransaksi_Click(object sender, EventArgs e)
         {
             BukaHalaman(new FormPeminjaman());
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FormLaporan fl = new FormLaporan();
+            fl.Show();
         }
 
         private void btnKeDataAlat_Click(object sender, EventArgs e)
@@ -206,6 +262,109 @@ namespace TimAlat_Siperal
                         dgvActivity.Columns[5].HeaderText = "TANGGAL PINJAM";
                         dgvActivity.Columns[6].HeaderText = "JUMLAH";
                         dgvActivity.Columns[7].HeaderText = "STATUS";
+
+                        dgvActivity.Columns["Jumlah"].Width = 100;
+                        dgvActivity.Columns["Status"].Width = 120;
+                    }
+
+                    // --- ISI DATA CHART 1 (GRAFIK PEMINJAMAN) ---
+                    Control[] foundCharts = this.Controls.Find("chart1", true);
+                    if (foundCharts.Length > 0 && foundCharts[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart1)
+                    {
+                        string queryChart = @"
+                            SELECT TOP 5 Nama_Alat, SUM(Jumlah_Pinjam) as TotalPinjam 
+                            FROM vm_MenampilkanDaftarPeminjaman 
+                            GROUP BY Nama_Alat 
+                            ORDER BY TotalPinjam DESC";
+
+                        SqlDataAdapter daChart = new SqlDataAdapter(queryChart, conn);
+                        DataTable dtChart = new DataTable();
+                        
+                        try {
+                            daChart.Fill(dtChart);
+                        } catch {
+                            // Coba pakai spasi jika pakai spasi di DB
+                            queryChart = @"
+                            SELECT TOP 5 [Nama Alat], SUM([Jumlah Pinjam]) as TotalPinjam 
+                            FROM vm_MenampilkanDaftarPeminjaman 
+                            GROUP BY [Nama Alat] 
+                            ORDER BY TotalPinjam DESC";
+                            daChart = new SqlDataAdapter(queryChart, conn);
+                            dtChart = new DataTable();
+                            daChart.Fill(dtChart);
+                        }
+
+                        chart1.Series.Clear();
+                        var series = chart1.Series.Add("Peminjaman");
+                        series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut;
+                        series.IsValueShownAsLabel = true;
+
+                        chart1.Titles.Clear();
+                        chart1.Titles.Add("5 Alat Sering Dipinjam");
+                        chart1.Titles[0].Font = new Font("Segoe UI", 12, FontStyle.Bold);
+
+                        foreach (DataRow row in dtChart.Rows)
+                        {
+                            series.Points.AddXY(row[0].ToString(), Convert.ToInt32(row[1]));
+                        }
+                    }
+
+                    // --- ISI DATA CHART 2 (COLUMN: Peminjaman per Hari) ---
+                    Control[] foundChart2 = this.Controls.Find("chart2", true);
+                    if (foundChart2.Length > 0 && foundChart2[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart2)
+                    {
+                        string queryChart2 = @"
+                            SELECT TOP 7 CONVERT(VARCHAR, Tanggal_Pinjam, 103) as Tanggal, COUNT(*) as TotalTransaksi
+                            FROM Peminjaman 
+                            GROUP BY CONVERT(VARCHAR, Tanggal_Pinjam, 103)
+                            ORDER BY MIN(Tanggal_Pinjam) ASC";
+
+                        SqlDataAdapter daChart2 = new SqlDataAdapter(queryChart2, conn);
+                        DataTable dtChart2 = new DataTable();
+                        try { daChart2.Fill(dtChart2); } catch { }
+
+                        chart2.Series.Clear();
+                        var series2 = chart2.Series.Add("Peminjaman Harian");
+                        series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
+                        series2.IsValueShownAsLabel = true;
+                        series2.Color = Color.FromArgb(16, 185, 129); // Hijau
+
+                        chart2.Titles.Clear();
+                        chart2.Titles.Add("Jumlah Peminjaman (7 Hari Terakhir)");
+                        chart2.Titles[0].Font = new Font("Segoe UI", 12, FontStyle.Bold);
+
+                        foreach (DataRow row in dtChart2.Rows)
+                        {
+                            series2.Points.AddXY(row[0].ToString(), Convert.ToInt32(row[1]));
+                        }
+                    }
+
+                    // --- ISI DATA CHART 3 (PIE: Status Peminjaman) ---
+                    Control[] foundChart3 = this.Controls.Find("chart3", true);
+                    if (foundChart3.Length > 0 && foundChart3[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart3)
+                    {
+                        string queryChart3 = @"
+                            SELECT Status, COUNT(*) as Total 
+                            FROM Peminjaman 
+                            GROUP BY Status";
+
+                        SqlDataAdapter daChart3 = new SqlDataAdapter(queryChart3, conn);
+                        DataTable dtChart3 = new DataTable();
+                        try { daChart3.Fill(dtChart3); } catch { }
+
+                        chart3.Series.Clear();
+                        var series3 = chart3.Series.Add("Status");
+                        series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+                        series3.IsValueShownAsLabel = true;
+                        
+                        chart3.Titles.Clear();
+                        chart3.Titles.Add("Perbandingan Status Alat");
+                        chart3.Titles[0].Font = new Font("Segoe UI", 12, FontStyle.Bold);
+
+                        foreach (DataRow row in dtChart3.Rows)
+                        {
+                            series3.Points.AddXY(row[0].ToString(), Convert.ToInt32(row[1]));
+                        }
                     }
 
                     PolesTabelModern();
