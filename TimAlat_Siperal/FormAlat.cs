@@ -60,7 +60,7 @@ namespace TimAlat_Siperal
             btnImportExcel = new Button();
             btnImportExcel.Text = "Import Excel";
             btnImportExcel.Size = new Size(120, 35);
-            btnImportExcel.Location = new Point(550, 480); // Diletakkan di bawah atau samping tombol lain
+            btnImportExcel.Location = new Point(450, 398); // Di sebelah tombol Refresh Data
             btnImportExcel.BackColor = Color.FromArgb(46, 204, 113); // Warna Hijau ala Excel
             btnImportExcel.ForeColor = Color.White;
             btnImportExcel.FlatStyle = FlatStyle.Flat;
@@ -68,7 +68,15 @@ namespace TimAlat_Siperal
             btnImportExcel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             btnImportExcel.Cursor = Cursors.Hand;
             btnImportExcel.Click += new EventHandler(btnImportExcel_Click); // Event click import
-            this.Controls.Add(btnImportExcel);
+            
+            // Tambahkan ke panel1 agar tidak tertutup
+            if (this.panel1 != null) {
+                this.panel1.Controls.Add(btnImportExcel);
+                btnImportExcel.BringToFront();
+            } else {
+                this.Controls.Add(btnImportExcel);
+                btnImportExcel.BringToFront();
+            }
 
             TampilData();
         }
