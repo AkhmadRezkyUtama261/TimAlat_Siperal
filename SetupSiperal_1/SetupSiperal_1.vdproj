@@ -806,7 +806,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SetupSiperal_1"
         "ProductCode" = "8:{74BA8361-EF55-4D7A-83CA-5B1DAEC9A6D0}"
-        "PackageCode" = "8:{023AFD0A-0347-4526-ADED-C3FEC8B2725C}"
+        "PackageCode" = "8:{5A6EFBAD-19FE-4CD0-8C4C-C3CF007639E3}"
         "UpgradeCode" = "8:{A0ABEAF4-52E3-4E14-A0E3-B1AD2EF9B457}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
