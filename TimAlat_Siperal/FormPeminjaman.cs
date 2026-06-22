@@ -17,10 +17,12 @@ namespace TimAlat_Siperal
         public FormPeminjaman()
         {
             InitializeComponent();
+            LoadPeminjamUnik();
             LoadAlatUnik();
             ShowData();
 
             if (panelTransaksi != null) panelTransaksi.Enabled = false;
+            if (btnCari != null) btnCari.Visible = false; // Tombol pencarian disembunyikan
         }
 
         void ShowData()
@@ -78,6 +80,30 @@ namespace TimAlat_Siperal
             catch (Exception) { }
         }
 
+        private void LoadPeminjamUnik()
+        {
+            using (SqlConnection conn = konn.GetConn())
+            {
+                try
+                {
+                    conn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT PeminjamID, Nama_Peminjam FROM Peminjam", conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (txtCariNama != null)
+                    {
+                        txtCariNama.DataSource = dt;
+                        txtCariNama.DisplayMember = "Nama_Peminjam";
+                        txtCariNama.ValueMember = "PeminjamID";
+                        txtCariNama.SelectedIndex = -1;
+                        txtCariNama.Text = "-- Pilih Peminjam --";
+                    }
+                }
+                catch (Exception) { }
+            }
+        }
+
         void LoadAlatUnik()
         {
             using (SqlConnection conn = konn.GetConn())
@@ -102,6 +128,32 @@ namespace TimAlat_Siperal
                     }
                 }
                 catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+            }
+        }
+
+        private void txtCariNama_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (txtCariNama.SelectedIndex != -1 && txtCariNama.SelectedValue != null && txtCariNama.SelectedValue is int)
+            {
+                idPeminjamTerpilih = (int)txtCariNama.SelectedValue;
+                using (SqlConnection conn = konn.GetConn())
+                {
+                    try
+                    {
+                        conn.Open();
+                        SqlCommand cmd = new SqlCommand("SELECT NIK, Alamat FROM Peminjam WHERE PeminjamID = @ID", conn);
+                        cmd.Parameters.AddWithValue("@ID", idPeminjamTerpilih);
+                        SqlDataReader dr = cmd.ExecuteReader();
+                        if (dr.Read())
+                        {
+                            if (lblNamaPeminjam != null) lblNamaPeminjam.Text = dr["NIK"].ToString();
+                            if (lblAlamat != null) lblAlamat.Text = dr["Alamat"].ToString();
+                            
+                            if (panelTransaksi != null) panelTransaksi.Enabled = true;
+                        }
+                    }
+                    catch (Exception) { }
+                }
             }
         }
 
@@ -339,7 +391,7 @@ namespace TimAlat_Siperal
 
         void Bersihkan()
         {
-            if (txtCariNama != null) txtCariNama.Clear();
+            if (txtCariNama != null) { txtCariNama.SelectedIndex = -1; txtCariNama.Text = "-- Pilih Peminjam --"; }
             if (txtSearchTrans != null) txtSearchTrans.Clear();
             if (lblNamaPeminjam != null) lblNamaPeminjam.Text = "-"; // REVISI
             if (lblNIKResult != null) lblNIKResult.Text = "NIK :"; // REVISI

@@ -1,4 +1,4 @@
-﻿namespace TimAlat_Siperal
+namespace TimAlat_Siperal
 {
     partial class FormPeminjaman
     {
@@ -23,7 +23,7 @@
             this.lblNIKResult = new System.Windows.Forms.Label();
             this.lblAlamat = new System.Windows.Forms.Label();
             this.btnCari = new System.Windows.Forms.Button();
-            this.txtCariNama = new System.Windows.Forms.TextBox();
+            this.txtCariNama = new System.Windows.Forms.ComboBox();
             this.lblNamaPeminjam = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -110,10 +110,13 @@
             // 
             // txtCariNama
             // 
+            this.txtCariNama.FormattingEnabled = true;
+            this.txtCariNama.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.txtCariNama.Location = new System.Drawing.Point(125, 37);
             this.txtCariNama.Name = "txtCariNama";
-            this.txtCariNama.Size = new System.Drawing.Size(239, 22);
+            this.txtCariNama.Size = new System.Drawing.Size(239, 24);
             this.txtCariNama.TabIndex = 0;
+            this.txtCariNama.SelectedIndexChanged += new System.EventHandler(this.txtCariNama_SelectedIndexChanged);
             // 
             // lblNamaPeminjam
             // 
@@ -472,7 +475,7 @@
         private System.Windows.Forms.Label lblNIKResult;
         private System.Windows.Forms.Label lblAlamat;
         private System.Windows.Forms.Button btnCari;
-        private System.Windows.Forms.TextBox txtCariNama;
+        private System.Windows.Forms.ComboBox txtCariNama;
         private System.Windows.Forms.Label lblNamaPeminjam;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
