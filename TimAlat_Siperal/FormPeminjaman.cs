@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -358,8 +358,9 @@ namespace TimAlat_Siperal
         private void panel1_Paint(object sender, PaintEventArgs e) { }
         private void FormPeminjaman_Load(object sender, EventArgs e)
         {
-            this.peminjamTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjam);
-            this.peminjamanTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjaman);
+            // Sengaja dimatikan agar tidak bentrok dengan ShowData() manual
+            // this.peminjamTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjam);
+            // this.peminjamanTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjaman);
         }
         private void bindingNavigatorPositionItem_Click(object sender, EventArgs e) { }
         private void bindingNavigatorMoveNextItem_Click(object sender, EventArgs e) { }

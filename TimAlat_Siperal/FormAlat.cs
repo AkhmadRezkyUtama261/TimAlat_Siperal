@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -771,9 +771,8 @@ namespace TimAlat_Siperal
 
         private void FormAlat_Load(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'dBPeminjamanAlatDataSet.Alat' table. You can move, or remove it, as needed.
-            this.alatTableAdapter.Fill(this.dBPeminjamanAlatDataSet.Alat);
-
+            // Sengaja dimatikan agar tidak bentrok dengan TampilData() manual dan menyebabkan tabel null
+            // this.alatTableAdapter.Fill(this.dBPeminjamanAlatDataSet.Alat);
         }
     }
 }

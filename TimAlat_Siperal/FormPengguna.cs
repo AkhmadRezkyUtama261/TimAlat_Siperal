@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -22,8 +22,8 @@ namespace TimAlat_Siperal
 
         private void FormPengguna_Load(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'dBPeminjamanAlatDataSet1.Peminjam' table. You can move, or remove it, as needed.
-            this.peminjamTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjam);
+            // Dimatikan agar tidak bentrok dengan TampilData()
+            // this.peminjamTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjam);
             this.BackColor = Color.FromArgb(245, 246, 250);
             dgvPengguna.BackgroundColor = Color.White;
             dgvPengguna.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -56,6 +56,17 @@ namespace TimAlat_Siperal
                     {
                         dgvPengguna.Columns["PeminjamID"].Visible = false;
                     }
+
+                    // Tambahkan Binding agar sinkron dengan tombol next-next (Navigator)
+                    txtNIK.DataBindings.Clear();
+                    txtNama.DataBindings.Clear();
+                    txtAlamat.DataBindings.Clear();
+                    txtTelp.DataBindings.Clear();
+
+                    txtNIK.DataBindings.Add("Text", bs, "NIK", true, DataSourceUpdateMode.Never);
+                    txtNama.DataBindings.Add("Text", bs, "Nama_Peminjam", true, DataSourceUpdateMode.Never);
+                    txtAlamat.DataBindings.Add("Text", bs, "Alamat", true, DataSourceUpdateMode.Never);
+                    txtTelp.DataBindings.Add("Text", bs, "NomorHP", true, DataSourceUpdateMode.Never);
                 }
                 catch (Exception ex)
                 {
