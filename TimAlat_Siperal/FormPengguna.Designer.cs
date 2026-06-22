@@ -1,4 +1,4 @@
-﻿namespace TimAlat_Siperal
+namespace TimAlat_Siperal
 {
     partial class FormPengguna
     {
@@ -62,7 +62,7 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.peminjamTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSet1TableAdapters.PeminjamTableAdapter();
-            this.button1 = new System.Windows.Forms.Button();
+
             ((System.ComponentModel.ISupportInitialize)(this.peminjamBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPengguna)).BeginInit();
@@ -349,7 +349,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
-            this.panel2.Controls.Add(this.button1);
+
             this.panel2.Controls.Add(this.btnSimpan);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label4);
@@ -390,15 +390,7 @@
             // 
             this.peminjamTableAdapter.ClearBeforeFill = true;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(5, 383);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(73, 37);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+
             // 
             // FormPengguna
             // 
@@ -457,6 +449,6 @@
         private DBPeminjamanAlatDataSet1 dBPeminjamanAlatDataSet1;
         private System.Windows.Forms.BindingSource peminjamBindingSource;
         private DBPeminjamanAlatDataSet1TableAdapters.PeminjamTableAdapter peminjamTableAdapter;
-        private System.Windows.Forms.Button button1;
+
     }
 }

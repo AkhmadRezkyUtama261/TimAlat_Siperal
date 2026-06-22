@@ -27,7 +27,7 @@ namespace TimAlat_Siperal
             btnImportExcel.Name = "btnImportExcel";
             btnImportExcel.Text = "Import Excel";
             btnImportExcel.Size = new Size(140, 36);
-            btnImportExcel.Location = new Point(3, 269); // Posisi pas di samping tombol Update
+            btnImportExcel.Location = new Point(3, 380); // Posisi di bawah tombol Delete
             btnImportExcel.BackColor = Color.FromArgb(46, 204, 113); // Hijau Excel
             btnImportExcel.ForeColor = Color.White;
             btnImportExcel.FlatStyle = FlatStyle.Flat;
@@ -143,7 +143,10 @@ namespace TimAlat_Siperal
                 }
                 catch (SqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                        MessageBox.Show("Gagal menyimpan! NIK sudah terdaftar dalam sistem.", "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                        MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -177,7 +180,10 @@ namespace TimAlat_Siperal
                 }
                 catch (SqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                        MessageBox.Show("Gagal mengubah! NIK sudah terdaftar dalam sistem.", "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                        MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
