@@ -113,29 +113,29 @@ namespace TimAlat_Siperal
 
             dgvActivity.Location = new Point(posisiX1, 280);
             dgvActivity.Width = (lebarKartu * 2) + jarakAntarKartu;
-            dgvActivity.Height = 220; // Diperpendek agar muat untuk chart di bawahnya
+            dgvActivity.Height = 190; // Diperpendek lagi agar tidak dempet dengan chart di bawahnya
 
             Control[] foundCharts1 = this.Controls.Find("chart1", true);
             if (foundCharts1.Length > 0 && foundCharts1[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart1)
             {
                 chart1.Location = new Point(posisiX3, 280);
-                chart1.Size = new Size(lebarKartu + 40, 220);
+                chart1.Size = new Size(lebarKartu + 40, 190);
                 chart1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             }
 
             Control[] foundCharts2 = this.Controls.Find("chart2", true);
             if (foundCharts2.Length > 0 && foundCharts2[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart2)
             {
-                chart2.Location = new Point(posisiX1, 520);
-                chart2.Size = new Size((lebarKartu * 2) + jarakAntarKartu, 220);
+                chart2.Location = new Point(posisiX1, 510);
+                chart2.Size = new Size((lebarKartu * 2) + jarakAntarKartu, 230);
                 chart2.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             }
 
             Control[] foundCharts3 = this.Controls.Find("chart3", true);
             if (foundCharts3.Length > 0 && foundCharts3[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart3)
             {
-                chart3.Location = new Point(posisiX3, 520);
-                chart3.Size = new Size(lebarKartu + 40, 220);
+                chart3.Location = new Point(posisiX3, 510);
+                chart3.Size = new Size(lebarKartu + 40, 230);
                 chart3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             }
         }
