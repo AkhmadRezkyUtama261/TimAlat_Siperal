@@ -262,7 +262,14 @@ namespace TimAlat_Siperal
                 }
                 catch (SqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        MessageBox.Show("Oops! Kode Alat tersebut sudah ada di database. Silakan gunakan Kode Alat yang lain.", "Peringatan: Data Duplikat", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Terjadi kesalahan database:\n" + ex.Message, "Error Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -326,7 +333,14 @@ namespace TimAlat_Siperal
                 }
                 catch (SqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        MessageBox.Show("Oops! Kode Alat tersebut sudah ada di database. Silakan gunakan Kode Alat yang lain.", "Peringatan: Data Duplikat", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Terjadi kesalahan database:\n" + ex.Message, "Error Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -357,10 +371,17 @@ namespace TimAlat_Siperal
                         TampilData();
                         Bersihkan();
                     }
-                    catch (SqlException ex)
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 547)
                     {
-                        MessageBox.Show(ex.Message, "Peringatan Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Gagal Menghapus! Data alat ini sedang digunakan di tabel Transaksi Peminjaman.\nPastikan alat ini sudah dikembalikan sebelum dihapus.", "Peringatan: Data Sedang Dipakai", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
+                    else
+                    {
+                        MessageBox.Show("Terjadi kesalahan database:\n" + ex.Message, "Error Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
                 }
             }
         }
