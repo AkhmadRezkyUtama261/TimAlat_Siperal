@@ -66,9 +66,25 @@ namespace TimAlat_Siperal
             btnImportExcel.FlatAppearance.BorderSize = 0;
             btnImportExcel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             btnImportExcel.Cursor = Cursors.Hand;
+            btnImportExcel.Click += new EventHandler(btnImportExcel_Click); // Event click import
             this.Controls.Add(btnImportExcel);
 
             TampilData();
+        }
+
+        // ================= POIN 3: IMPORT EXCEL (Tahap 1) =================
+        private void btnImportExcel_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+            ofd.Title = "Pilih File Excel Data Alat";
+            
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = ofd.FileName;
+                MessageBox.Show("File berhasil dipilih:\n" + filePath + "\n\n(Tahap selanjutnya: Membaca isi Excelnya!)", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Logika OleDb akan dilanjutkan di commit berikutnya
+            }
         }
 
         private void btnTampil_Click(object sender, EventArgs e)
