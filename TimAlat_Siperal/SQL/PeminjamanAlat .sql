@@ -471,6 +471,12 @@ BEGIN
 		THROW 51000, 'Alat nya kaga ada nyak', 1
 	End
 
+	-- Validasi: Cegah hapus alat jika sedang dipinjam
+	IF EXISTS (SELECT 1 FROM Peminjaman WHERE alatID = @AlatID AND Status = 'DIPINJAM')
+	BEGIN
+		THROW 51000, 'Gagal! Alat ini sedang dipinjam dan belum dikembalikan.', 1;
+	END
+
 	Begin try
     DELETE FROM Alat WHERE alatID = @AlatID;
     PRINT 'Alat Berhasil Dihapus! nyak';
