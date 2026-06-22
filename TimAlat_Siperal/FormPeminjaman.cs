@@ -37,9 +37,6 @@ namespace TimAlat_Siperal
 
                     bs.DataSource = dt;
 
-                    bs.PositionChanged -= SynchronizePanelKiri;
-                    bs.PositionChanged += SynchronizePanelKiri;
-
                     if (dgvPeminjaman != null)
                     {
                         dgvPeminjaman.DataSource = bs;
@@ -50,34 +47,12 @@ namespace TimAlat_Siperal
                     {
                         bindingNavigator1.BindingSource = bs;
                     }
-
-                    SynchronizePanelKiri(null, null);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Gagal Memuat Tabel Peminjaman: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        private void SynchronizePanelKiri(object sender, EventArgs e)
-        {
-            try
-            {
-                if (bs.Current == null) return;
-                DataRowView currentRow = (DataRowView)bs.Current;
-
-                if (txtCariNama != null) txtCariNama.Text = currentRow["Nama Peminjam"].ToString();
-
-                // REVISI: Menggunakan lblNamaPeminjam karena ini label yang posisinya di KANAN (tempat value NIK)
-                if (lblNamaPeminjam != null) lblNamaPeminjam.Text = currentRow["NIK Peminjam"].ToString();
-
-                if (lblAlamat != null) lblAlamat.Text = currentRow["Alamat Peminjam"].ToString();
-
-                // Mengembalikan tulisan aslinya jika sempat tertimpa
-                if (lblNIKResult != null) lblNIKResult.Text = "NIK :";
-            }
-            catch (Exception) { }
         }
 
         private void LoadPeminjamUnik()
@@ -410,6 +385,9 @@ namespace TimAlat_Siperal
         private void panel1_Paint(object sender, PaintEventArgs e) { }
         private void FormPeminjaman_Load(object sender, EventArgs e)
         {
+            if (this.panel1 != null) {
+                this.panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            }
             // Sengaja dimatikan agar tidak bentrok dengan ShowData() manual
             // this.peminjamTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjam);
             // this.peminjamanTableAdapter.Fill(this.dBPeminjamanAlatDataSet1.Peminjaman);

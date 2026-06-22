@@ -184,18 +184,18 @@ namespace TimAlat_Siperal
                         bindingNavigator1.BindingSource = bs;
 
                     // ================= DATA BINDING SAKTI TEXTBOX =================
+                    // Dihapus agar text box tidak auto-fill saat anak panah (Navigator) diklik,
+                    // melainkan hanya bergeser baris biru di tabel saja. Pengisian murni dari CellClick.
                     txtKodeAlat.DataBindings.Clear();
                     txtNama.DataBindings.Clear();
                     txtStok.DataBindings.Clear();
                     txtMerek.DataBindings.Clear();
 
-                    txtKodeAlat.DataBindings.Add("Text", bs, "alatID", true, DataSourceUpdateMode.Never);
-                    txtNama.DataBindings.Add("Text", bs, "Nama_Alat", true, DataSourceUpdateMode.Never);
-                    txtStok.DataBindings.Add("Text", bs, "Stok", true, DataSourceUpdateMode.Never);
-                    txtMerek.DataBindings.Add("Text", bs, "Merek", true, DataSourceUpdateMode.Never);
-
                     if (dgvAlat.Columns["AdminID"] != null)
                         dgvAlat.Columns["AdminID"].Visible = false;
+
+                    // Buat DataGrid Alat Fill
+                    dgvAlat.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 }
                 catch (Exception ex)
                 {
@@ -531,7 +531,7 @@ namespace TimAlat_Siperal
             this.dgvAlat.Location = new System.Drawing.Point(670, 135);
             this.dgvAlat.Name = "dgvAlat";
             this.dgvAlat.RowHeadersWidth = 51;
-            this.dgvAlat.Size = new System.Drawing.Size(650, 450);
+            this.dgvAlat.Size = new System.Drawing.Size(650, 343);
             this.dgvAlat.TabIndex = 0;
             this.dgvAlat.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dgvAlat.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAlat_CellContentClick);

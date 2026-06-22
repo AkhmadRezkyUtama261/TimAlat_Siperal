@@ -62,7 +62,6 @@ namespace TimAlat_Siperal
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.peminjamTableAdapter = new TimAlat_Siperal.DBPeminjamanAlatDataSet1TableAdapters.PeminjamTableAdapter();
-
             ((System.ComponentModel.ISupportInitialize)(this.peminjamBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dBPeminjamanAlatDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPengguna)).BeginInit();
@@ -194,7 +193,7 @@ namespace TimAlat_Siperal
             this.dgvPengguna.Name = "dgvPengguna";
             this.dgvPengguna.RowHeadersWidth = 51;
             this.dgvPengguna.RowTemplate.Height = 24;
-            this.dgvPengguna.Size = new System.Drawing.Size(915, 300);
+            this.dgvPengguna.Size = new System.Drawing.Size(915, 406);
             this.dgvPengguna.TabIndex = 9;
             this.dgvPengguna.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPengguna_CellClick);
             // 
@@ -349,7 +348,6 @@ namespace TimAlat_Siperal
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
-
             this.panel2.Controls.Add(this.btnSimpan);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label4);
@@ -389,8 +387,6 @@ namespace TimAlat_Siperal
             // peminjamTableAdapter
             // 
             this.peminjamTableAdapter.ClearBeforeFill = true;
-            // 
-
             // 
             // FormPengguna
             // 

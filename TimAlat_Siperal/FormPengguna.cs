@@ -54,6 +54,10 @@ namespace TimAlat_Siperal
             this.BackColor = Color.FromArgb(245, 246, 250);
             dgvPengguna.BackgroundColor = Color.White;
             dgvPengguna.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            
+            if (this.panel1 != null) {
+                this.panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            }
 
             if (StatusAkses == "PETUGAS")
             {
@@ -85,15 +89,12 @@ namespace TimAlat_Siperal
                     }
 
                     // Tambahkan Binding agar sinkron dengan tombol next-next (Navigator)
+                    // Dihapus agar text box tidak auto-fill saat anak panah (Navigator) diklik,
+                    // melainkan hanya bergeser baris biru di tabel saja. Pengisian murni dari CellClick.
                     txtNIK.DataBindings.Clear();
                     txtNama.DataBindings.Clear();
                     txtAlamat.DataBindings.Clear();
                     txtTelp.DataBindings.Clear();
-
-                    txtNIK.DataBindings.Add("Text", bs, "NIK", true, DataSourceUpdateMode.Never);
-                    txtNama.DataBindings.Add("Text", bs, "Nama_Peminjam", true, DataSourceUpdateMode.Never);
-                    txtAlamat.DataBindings.Add("Text", bs, "Alamat", true, DataSourceUpdateMode.Never);
-                    txtTelp.DataBindings.Add("Text", bs, "NomorHP", true, DataSourceUpdateMode.Never);
                 }
                 catch (Exception ex)
                 {

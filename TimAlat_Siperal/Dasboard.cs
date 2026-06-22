@@ -99,44 +99,63 @@ namespace TimAlat_Siperal
 
             TarikDataDariDatabase();
 
+            this.Resize += Dasboard_Resize;
+            Dasboard_Resize(this, EventArgs.Empty);
+        }
+
+        private void Dasboard_Resize(object sender, EventArgs e)
+        {
+            if (this.ClientSize.Width == 0 || this.ClientSize.Height == 0) return;
+
             int padding = 40;
-            int lebarKartu = 280;
             int jarakAntarKartu = 20;
+            int availWidth = this.ClientSize.Width - panelSidebar.Width - (padding * 2);
+            int lebarKartu = (availWidth - (jarakAntarKartu * 2)) / 3;
 
             int posisiX1 = panelSidebar.Width + padding;
             int posisiX2 = posisiX1 + lebarKartu + jarakAntarKartu;
             int posisiX3 = posisiX2 + lebarKartu + jarakAntarKartu;
 
-            card1.Location = new Point(posisiX1, 120);
-            card2.Location = new Point(posisiX2, 120);
-            card3.Location = new Point(posisiX3, 120);
+            if (card1 != null) { card1.Location = new Point(posisiX1, 120); card1.Width = lebarKartu; card1.Height = 130; }
+            if (card2 != null) { card2.Location = new Point(posisiX2, 120); card2.Width = lebarKartu; card2.Height = 130; }
+            if (card3 != null) { card3.Location = new Point(posisiX3, 120); card3.Width = lebarKartu; card3.Height = 130; }
 
-            dgvActivity.Location = new Point(posisiX1, 280);
-            dgvActivity.Width = (lebarKartu * 2) + jarakAntarKartu;
-            dgvActivity.Height = 190; // Diperpendek lagi agar tidak dempet dengan chart di bawahnya
+            int startY = 280;
+            int availHeight = this.ClientSize.Height - startY - padding;
+            int halfHeight = (availHeight - jarakAntarKartu) / 2;
+            
+            // Minimal height prevent error
+            if (halfHeight < 150) halfHeight = 150;
+
+            if (dgvActivity != null)
+            {
+                dgvActivity.Location = new Point(posisiX1, startY);
+                dgvActivity.Size = new Size((lebarKartu * 2) + jarakAntarKartu, halfHeight);
+                dgvActivity.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            }
 
             Control[] foundCharts1 = this.Controls.Find("chart1", true);
             if (foundCharts1.Length > 0 && foundCharts1[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart1)
             {
-                chart1.Location = new Point(posisiX3, 280);
-                chart1.Size = new Size(lebarKartu + 40, 190);
-                chart1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                chart1.Location = new Point(posisiX3, startY);
+                chart1.Size = new Size(lebarKartu, halfHeight);
+                chart1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             }
 
             Control[] foundCharts2 = this.Controls.Find("chart2", true);
             if (foundCharts2.Length > 0 && foundCharts2[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart2)
             {
-                chart2.Location = new Point(posisiX1, 510);
-                chart2.Size = new Size((lebarKartu * 2) + jarakAntarKartu, 230);
+                chart2.Location = new Point(posisiX1, startY + halfHeight + jarakAntarKartu);
+                chart2.Size = new Size((lebarKartu * 2) + jarakAntarKartu, halfHeight);
                 chart2.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             }
 
             Control[] foundCharts3 = this.Controls.Find("chart3", true);
             if (foundCharts3.Length > 0 && foundCharts3[0] is System.Windows.Forms.DataVisualization.Charting.Chart chart3)
             {
-                chart3.Location = new Point(posisiX3, 510);
-                chart3.Size = new Size(lebarKartu + 40, 230);
-                chart3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                chart3.Location = new Point(posisiX3, startY + halfHeight + jarakAntarKartu);
+                chart3.Size = new Size(lebarKartu, halfHeight);
+                chart3.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             }
         }
 
@@ -380,7 +399,6 @@ namespace TimAlat_Siperal
         {
             pnl.Controls.Clear();
             pnl.BackColor = Color.White;
-            pnl.Size = new Size(280, 130);
             pnl.BorderStyle = BorderStyle.None;
 
             pnl.Controls.Add(new Label { Text = judul, Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.Gray, Location = new Point(20, 20), AutoSize = true });
